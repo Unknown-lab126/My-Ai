@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Link Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+        .movie-link {
+            margin-top: 20px;
+        }
+        .movie-link a {
+            text-decoration: none;
+            color: #007bff;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Movie Link Viewer</h1>
+        <form id="linkForm">
+            <input type="text" id="movieLink" placeholder="Enter movie link (e.g., IMDb URL)" required>
+            <button type="submit">Submit</button>
+        </form>
+        <div class="movie-link" id="displayLink">
+            <!-- Movie link will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('linkForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const link = document.getElementById('movieLink').value;
+            document.getElementById('displayLink').innerHTML = `
+                <p>Movie Link:</p>
+                <a href="${link}" target="_blank">${link}</a>
+            `;
+            document.getElementById('movieLink').value = ''; // Clear the input field
+        });
+    </script>
+</body>
+</html>
