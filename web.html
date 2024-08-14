@@ -23,11 +23,12 @@
         }
         #tab-bar {
             display: flex;
-            align-items: center;
+            flex-wrap: nowrap;
             background: rgba(0, 0, 0, 0.8);
             color: white;
             padding: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            overflow-x: auto;
         }
         .tab {
             padding: 10px 15px;
@@ -85,6 +86,7 @@
         .iframe-container {
             flex: 1;
             position: relative;
+            display: none;
         }
         .iframe-container iframe {
             width: 100%;
@@ -92,6 +94,32 @@
             border: none;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        #game-options {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            color: #333;
+        }
+        #game-options h2 {
+            margin: 20px 0;
+        }
+        #game-options button {
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        #game-options button:hover {
+            background: #45a049;
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -101,20 +129,48 @@
             <div class="tab active" onclick="selectTab(0)">Tab 1</div>
             <div class="tab" onclick="selectTab(1)">Tab 2</div>
             <div class="tab" onclick="selectTab(2)">Tab 3</div>
+            <div class="tab" onclick="selectTab(3)">Tab 4</div>
+            <div class="tab" onclick="selectTab(4)">Tab 5</div>
+            <div class="tab" onclick="selectTab(5)">Tab 6</div>
+            <div class="tab" onclick="selectTab(6)">Games</div>
         </div>
         <div id="url-bar">
             <input type="text" id="url" placeholder="Enter URL" />
             <button onclick="navigate()">Go</button>
         </div>
         <div id="content">
+            <!-- Tab 1 -->
             <div class="iframe-container" id="iframe-container-0">
                 <iframe id="iframe-0" src="https://www.proxysite.com/"></iframe>
             </div>
-            <div class="iframe-container" id="iframe-container-1" style="display: none;">
+            <!-- Tab 2 -->
+            <div class="iframe-container" id="iframe-container-1">
                 <iframe id="iframe-1"></iframe>
             </div>
-            <div class="iframe-container" id="iframe-container-2" style="display: none;">
+            <!-- Tab 3 -->
+            <div class="iframe-container" id="iframe-container-2">
                 <iframe id="iframe-2"></iframe>
+            </div>
+            <!-- Tab 4 -->
+            <div class="iframe-container" id="iframe-container-3">
+                <iframe id="iframe-3"></iframe>
+            </div>
+            <!-- Tab 5 -->
+            <div class="iframe-container" id="iframe-container-4">
+                <iframe id="iframe-4"></iframe>
+            </div>
+            <!-- Tab 6 -->
+            <div class="iframe-container" id="iframe-container-5">
+                <iframe id="iframe-5"></iframe>
+            </div>
+            <!-- Games -->
+            <div class="iframe-container" id="iframe-container-6" style="display: flex;">
+                <div id="game-options">
+                    <h2>Game Options</h2>
+                    <button onclick="alert('Game 1')">Game 1</button>
+                    <button onclick="alert('Game 2')">Game 2</button>
+                    <button onclick="alert('Game 3')">Game 3</button>
+                </div>
             </div>
         </div>
     </div>
@@ -123,7 +179,7 @@
 
         function selectTab(tabIndex) {
             // Hide all tabs
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 7; i++) {
                 document.getElementById('iframe-container-' + i).style.display = 'none';
                 document.querySelectorAll('.tab')[i].classList.remove('active');
             }
@@ -134,25 +190,31 @@
             activeTab = tabIndex;
 
             // Update URL bar to the current tab's URL
-            const urlInput = document.getElementById('url');
-            const iframe = document.getElementById('iframe-' + tabIndex);
-            urlInput.value = iframe.src;
+            if (tabIndex < 6) { // Only update for tabs with iframes
+                const urlInput = document.getElementById('url');
+                const iframe = document.getElementById('iframe-' + tabIndex);
+                urlInput.value = iframe.src;
+            } else { // Game tab
+                document.getElementById('url').value = '';
+            }
         }
 
         function navigate() {
-            let url = document.getElementById('url').value.trim();
-            
-            // Add default protocol if missing
-            if (!/^https?:\/\//i.test(url)) {
-                url = 'http://' + url;
-            }
-            
-            // Validate URL and update iframe
-            try {
-                new URL(url); // Basic URL validation
-                document.getElementById('iframe-' + activeTab).src = url;
-            } catch (e) {
-                alert('Invalid URL');
+            if (activeTab < 6) { // Only navigate if not on the game tab
+                let url = document.getElementById('url').value.trim();
+                
+                // Add default protocol if missing
+                if (!/^https?:\/\//i.test(url)) {
+                    url = 'http://' + url;
+                }
+                
+                // Validate URL and update iframe
+                try {
+                    new URL(url); // Basic URL validation
+                    document.getElementById('iframe-' + activeTab).src = url;
+                } catch (e) {
+                    alert('Invalid URL');
+                }
             }
         }
 
