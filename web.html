@@ -21,10 +21,29 @@
             flex-direction: column;
             height: 100%;
         }
+        #tab-bar {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .tab {
+            padding: 10px 15px;
+            margin-right: 5px;
+            border-radius: 5px;
+            background: #333;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .tab.active {
+            background: #4CAF50;
+        }
         #url-bar {
             display: flex;
             align-items: center;
-            padding: 15px;
+            padding: 10px;
             background: rgba(0, 0, 0, 0.8);
             color: white;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
@@ -58,28 +77,68 @@
             background: #45a049;
             transform: scale(1.05);
         }
-        #iframe {
+        #content {
             flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        .iframe-container {
+            flex: 1;
+            position: relative;
+        }
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
             border: none;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-        #iframe:hover {
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
         }
     </style>
 </head>
 <body>
     <div id="browser">
+        <div id="tab-bar">
+            <div class="tab active" onclick="selectTab(0)">Tab 1</div>
+            <div class="tab" onclick="selectTab(1)">Tab 2</div>
+            <div class="tab" onclick="selectTab(2)">Tab 3</div>
+        </div>
         <div id="url-bar">
             <input type="text" id="url" placeholder="Enter URL" />
             <button onclick="navigate()">Go</button>
         </div>
-        <iframe id="iframe" src="https://www.proxysite.com/" onload="setDefaultURL()"></iframe>
+        <div id="content">
+            <div class="iframe-container" id="iframe-container-0">
+                <iframe id="iframe-0" src="https://www.proxysite.com/"></iframe>
+            </div>
+            <div class="iframe-container" id="iframe-container-1" style="display: none;">
+                <iframe id="iframe-1"></iframe>
+            </div>
+            <div class="iframe-container" id="iframe-container-2" style="display: none;">
+                <iframe id="iframe-2"></iframe>
+            </div>
+        </div>
     </div>
     <script>
-        // Function to navigate to the entered URL
+        let activeTab = 0;
+
+        function selectTab(tabIndex) {
+            // Hide all tabs
+            for (let i = 0; i < 3; i++) {
+                document.getElementById('iframe-container-' + i).style.display = 'none';
+                document.querySelectorAll('.tab')[i].classList.remove('active');
+            }
+            
+            // Show the selected tab
+            document.getElementById('iframe-container-' + tabIndex).style.display = 'flex';
+            document.querySelectorAll('.tab')[tabIndex].classList.add('active');
+            activeTab = tabIndex;
+
+            // Update URL bar to the current tab's URL
+            const urlInput = document.getElementById('url');
+            const iframe = document.getElementById('iframe-' + tabIndex);
+            urlInput.value = iframe.src;
+        }
+
         function navigate() {
             let url = document.getElementById('url').value.trim();
             
@@ -91,22 +150,16 @@
             // Validate URL and update iframe
             try {
                 new URL(url); // Basic URL validation
-                document.getElementById('iframe').src = url;
+                document.getElementById('iframe-' + activeTab).src = url;
             } catch (e) {
                 alert('Invalid URL');
             }
         }
 
-        // Function to set default URL on page load
-        function setDefaultURL() {
-            document.getElementById('url').value = "https://www.proxysite.com/";
-        }
-
         // Set default URL when the page loads
         window.onload = function() {
-            setDefaultURL();
+            selectTab(activeTab);
         }
     </script>
 </body>
 </html>
-
