@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie App</title>
+    <title>Movie Viewer</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,11 +18,23 @@
             width: 80%;
             max-width: 1200px;
             margin-top: 20px;
+            text-align: center;
         }
-        select {
-            padding: 10px;
-            font-size: 16px;
+        .movie-links {
             margin-bottom: 20px;
+        }
+        .movie-links button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .movie-links button:hover {
+            background-color: #0056b3;
         }
         iframe {
             width: 100%;
@@ -34,21 +46,19 @@
 <body>
     <div class="container">
         <h1>Movie Viewer</h1>
-        <select id="movieSelect">
-            <option value="" disabled selected>Select a Movie</option>
-            <option value="https://vidsrc.xyz/embed/movie/tt0327597">Coraline</option>
-            <option value="https://vidsrc.xyz/embed/movie/tt4589218">Five Nights at Freddy's</option>
-            <option value="https://vidsrc.xyz/embed/movie/tt1396484">IT</option>
-            <option value="https://vidsrc.xyz/embed/movie/tt1457767">The Conjuring</option>
-        </select>
+        <div class="movie-links">
+            <button onclick="loadMovie('https://vidsrc.xyz/embed/movie/tt0327597')">Coraline</button>
+            <button onclick="loadMovie('https://vidsrc.xyz/embed/movie/tt4589218')">Five Nights at Freddy's</button>
+            <button onclick="loadMovie('https://vidsrc.xyz/embed/movie/tt1396484')">IT</button>
+            <button onclick="loadMovie('https://vidsrc.xyz/embed/movie/tt1457767')">The Conjuring</button>
+        </div>
         <iframe id="moviePlayer" src="" allowfullscreen></iframe>
     </div>
 
     <script>
-        document.getElementById('movieSelect').addEventListener('change', function() {
-            var iframe = document.getElementById('moviePlayer');
-            iframe.src = this.value;
-        });
+        function loadMovie(url) {
+            document.getElementById('moviePlayer').src = url;
+        }
     </script>
 </body>
 </html>
