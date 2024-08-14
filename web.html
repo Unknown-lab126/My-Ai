@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cool Browser</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            color: #333;
+            overflow: hidden;
+        }
+        #browser {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        #url-bar {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        #url-bar input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            outline: none;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        #url-bar input:focus {
+            background-color: white;
+            color: #333;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        #url-bar button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        #url-bar button:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+        #iframe {
+            flex: 1;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        #iframe:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div id="browser">
+        <div id="url-bar">
+            <input type="text" id="url" placeholder="Enter URL" />
+            <button onclick="navigate()">Go</button>
+        </div>
+        <iframe id="iframe" src="https://www.proxysite.com/" onload="setDefaultURL()"></iframe>
+    </div>
+    <script>
+        // Function to navigate to the entered URL
+        function navigate() {
+            let url = document.getElementById('url').value.trim();
+            
+            // Add default protocol if missing
+            if (!/^https?:\/\//i.test(url)) {
+                url = 'http://' + url;
+            }
+            
+            // Validate URL and update iframe
+            try {
+                new URL(url); // Basic URL validation
+                document.getElementById('iframe').src = url;
+            } catch (e) {
+                alert('Invalid URL');
+            }
+        }
+
+        // Function to set default URL on page load
+        function setDefaultURL() {
+            document.getElementById('url').value = "https://www.proxysite.com/";
+        }
+
+        // Set default URL when the page loads
+        window.onload = function() {
+            setDefaultURL();
+        }
+    </script>
+</body>
+</html>
+
