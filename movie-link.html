@@ -13,7 +13,7 @@
             height: 100vh;
             background-color: #f5f5f5;
             margin: 0;
-            overflow: hidden; /* Prevents scrollbars from appearing */
+            overflow: hidden; /* Prevent scrollbars */
         }
         .container {
             background: #fff;
@@ -22,13 +22,13 @@
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
             width: 100%;
             max-width: 1200px;
-            height: 80vh; /* Adjust height as needed */
+            height: 80vh;
             position: relative;
             overflow: hidden;
-            transition: transform 0.3s ease-in-out; /* Smooth animation for container */
+            transition: transform 0.3s ease-in-out;
         }
         .container:hover {
-            transform: scale(1.02); /* Slight zoom effect on hover */
+            transform: scale(1.02); /* Slight zoom effect */
         }
         select {
             width: 100%;
@@ -64,14 +64,10 @@
         }
         #showOptionsBtn:hover {
             background-color: #0056b3;
-            transform: scale(1.05); /* Slight scale effect on hover */
+            transform: scale(1.05); /* Slight scale effect */
         }
         #showOptionsBtn:focus {
             outline: none;
-        }
-        .category {
-            font-weight: bold;
-            margin-top: 20px;
         }
     </style>
 </head>
@@ -192,12 +188,6 @@
                     showOptionsBtn.style.display = 'block';
                     movieFrame.src = ''; // Clear iframe content
                 }
-            });
-        });
-    </script>
-</body>
-</html>
-
             });
         });
     </script>
