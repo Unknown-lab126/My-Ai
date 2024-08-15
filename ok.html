@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Solver Fullscreen</title>
+    <title>Math Solver Embed</title>
     <style>
         /* Reset default margin and padding */
         * {
@@ -15,34 +15,32 @@
         html, body {
             height: 100%;
             width: 100%;
+            margin: 0;
             overflow: hidden;
+            background-color: #f5f5f5;
         }
-        body {
+        #embedContainer {
+            height: 100vh;
+            width: 100vw;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f5f5f5;
         }
-        #fullscreenButton {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #007bff;
-            color: #fff;
+        #embedFrame {
+            height: 100%;
+            width: 100%;
             border: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        #fullscreenButton:hover {
-            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <button id="fullscreenButton">Open Math Solver</button>
-    
+    <div id="embedContainer">
+        <iframe id="embedFrame" src="https://why.math-solver.com/" title="Math Solver"></iframe>
+    </div>
+
     <script>
-        document.getElementById('fullscreenButton').addEventListener('click', function() {
+        // Function to request fullscreen
+        function requestFullscreen() {
             if (document.documentElement.requestFullscreen) {
                 document.documentElement.requestFullscreen();
             } else if (document.documentElement.mozRequestFullScreen) { // Firefox
@@ -52,10 +50,10 @@
             } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
                 document.documentElement.msRequestFullscreen();
             }
-            
-            // Open Math Solver in a new tab
-            window.open('https://why.math-solver.com/', '_blank');
-        });
+        }
+
+        // Request fullscreen when the iframe is loaded
+        window.onload = requestFullscreen;
     </script>
 </body>
 </html>
