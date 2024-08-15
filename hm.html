@@ -62,17 +62,16 @@
 
     <script>
         function loadUrl() {
-            const urlInput = document.getElementById('urlInput');
+            const urlInput = document.getElementById('urlInput').value;
             const proxyFrame = document.getElementById('proxyFrame');
-            const url = urlInput.value;
 
-            if (url) {
-                try {
-                    // Directly setting src of iframe to the URL (might face CORS issues)
-                    proxyFrame.src = url;
-                } catch (error) {
-                    console.error("Error loading URL:", error);
-                }
+            if (urlInput) {
+                // Add a protocol if not provided
+                const url = urlInput.startsWith('http://') || urlInput.startsWith('https://') 
+                    ? urlInput 
+                    : 'http://' + urlInput;
+
+                proxyFrame.src = url;
             }
         }
     </script>
