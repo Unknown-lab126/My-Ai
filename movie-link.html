@@ -7,58 +7,97 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            background-color: #f4f4f4;
+            height: 100vh;
+            background-color: #f5f5f5;
+            margin: 0;
         }
         .container {
-            width: 80%;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
             max-width: 1200px;
-            margin-top: 20px;
-            text-align: center;
+            height: 80vh; /* Adjust height as needed */
+            position: relative;
         }
-        .movie-links {
-            margin-bottom: 20px;
-        }
-        .movie-links button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin: 5px;
-            border: none;
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .movie-links button:hover {
-            background-color: #0056b3;
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: none; /* Hidden initially */
         }
         iframe {
             width: 100%;
-            height: 600px;
+            height: 100%;
             border: none;
+            border-radius: 8px;
+        }
+        #showOptionsBtn {
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        #showOptionsBtn:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Movie Viewer</h1>
-        <div class="movie-links">
-            <button onclick="loadMovie('https://vidsrc.xyz/embed/movie/tt0327597')">Coraline</button>
-            <button onclick="loadMovie('https://vidsrc.xyz/embed/movie/tt4589218')">Five Nights at Freddy's</button>
-            <button onclick="loadMovie('https://vidsrc.xyz/embed/movie/tt1396484')">IT</button>
-            <button onclick="loadMovie('https://vidsrc.xyz/embed/movie/tt1457767')">The Conjuring</button>
-        </div>
-        <iframe id="moviePlayer" src="" allowfullscreen></iframe>
+        <button id="showOptionsBtn">Select a Movie</button>
+        <select id="movieSelect">
+            <option value="" disabled selected>Select a movie</option>
+            <option value="tt4589218">Inception (2010)</option>
+            <option value="tt0327597">Coraline (2009)</option>
+            <option value="tt1396484">It (?)</option>
+            <option value="tt7349950">It Chapt2 (?)</option>
+            <!-- Add more movies here -->
+        </select>
+        <iframe id="movieFrame" src="" allowfullscreen></iframe>
     </div>
 
     <script>
-        function loadMovie(url) {
-            document.getElementById('moviePlayer').src = url;
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const showOptionsBtn = document.getElementById('showOptionsBtn');
+            const movieSelect = document.getElementById('movieSelect');
+            const movieFrame = document.getElementById('movieFrame');
+
+            // Show movie selection options
+            showOptionsBtn.addEventListener('click', () => {
+                movieSelect.style.display = 'block';
+                showOptionsBtn.style.display = 'none';
+            });
+
+            // Handle movie selection
+            movieSelect.addEventListener('change', (event) => {
+                const selectedID = event.target.value;
+                if (selectedID) {
+                    const movieURL = `https://vidsrc.xyz/embed/movie/${selectedID}`;
+                    movieFrame.src = movieURL;
+                    movieSelect.style.display = 'none';
+                }
+            });
+
+            // Show options again when pressing the Escape key
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    movieSelect.style.display = 'block';
+                    showOptionsBtn.style.display = 'block';
+                    movieFrame.src = ''; // Clear iframe content
+                }
+            });
+        });
     </script>
 </body>
 </html>
