@@ -74,7 +74,7 @@
 <body>
     <div class="container">
         <button id="showOptionsBtn">Select a Movie</button>
-        <select id="movieSelect">
+        <select id="movieSelect" aria-label="Select a movie">
             <option value="" disabled selected>Select a movie</option>
 
             <!-- Horror Movies -->
@@ -151,7 +151,7 @@
                 <option value="tt2294449">Frozen (2013)</option>
             </optgroup>
         </select>
-        <iframe id="movieFrame" src="" allowfullscreen></iframe>
+        <iframe id="movieFrame" src="" allowfullscreen aria-label="Movie Player"></iframe>
     </div>
 
     <script>
@@ -164,6 +164,7 @@
             showOptionsBtn.addEventListener('click', () => {
                 movieSelect.classList.add('show');
                 showOptionsBtn.style.display = 'none';
+                movieSelect.focus(); // Set focus to select element when displayed
             });
 
             // Handle movie selection
