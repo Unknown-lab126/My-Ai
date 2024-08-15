@@ -13,16 +13,22 @@
             height: 100vh;
             background-color: #f5f5f5;
             margin: 0;
+            overflow: hidden; /* Prevents scrollbars from appearing */
         }
         .container {
             background: #fff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
             width: 100%;
             max-width: 1200px;
             height: 80vh; /* Adjust height as needed */
             position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out; /* Smooth animation for container */
+        }
+        .container:hover {
+            transform: scale(1.02); /* Slight zoom effect on hover */
         }
         select {
             width: 100%;
@@ -31,12 +37,19 @@
             border-radius: 4px;
             margin-bottom: 10px;
             display: none; /* Hidden initially */
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        select.show {
+            display: block;
+            opacity: 1;
         }
         iframe {
             width: 100%;
             height: 100%;
             border: none;
             border-radius: 8px;
+            transition: opacity 0.3s ease-in-out;
         }
         #showOptionsBtn {
             padding: 10px;
@@ -47,9 +60,18 @@
             cursor: pointer;
             font-size: 16px;
             margin-bottom: 10px;
+            transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
         }
         #showOptionsBtn:hover {
             background-color: #0056b3;
+            transform: scale(1.05); /* Slight scale effect on hover */
+        }
+        #showOptionsBtn:focus {
+            outline: none;
+        }
+        .category {
+            font-weight: bold;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -58,21 +80,80 @@
         <button id="showOptionsBtn">Select a Movie</button>
         <select id="movieSelect">
             <option value="" disabled selected>Select a movie</option>
-            <option value="tt4589218">Five Nights At Freddy's (2023)</option>
-            <option value="tt0327597">Coraline (2009)</option>
-            <option value="tt1396484">It (2017)</option>
-            <option value="tt7349950">It Chapter Two (2019)</option>
-            <!-- Additional Movies -->
-            <option value="tt0111161">The Shawshank Redemption (1994)</option>
-            <option value="tt0068646">The Godfather (1972)</option>
-            <option value="tt0071562">The Godfather Part II (1974)</option>
-            <option value="tt0468569">The Dark Knight (2008)</option>
-            <option value="tt0816692">Interstellar (2014)</option>
-            <option value="tt1375666">Inception (2010)</option>
-            <option value="tt0133093">The Matrix (1999)</option>
-            <option value="tt0080684">Star Wars: Episode IV - A New Hope (1977)</option>
-            <option value="tt0109830">Forrest Gump (1994)</option>
-            <option value="tt0110912">Pulp Fiction (1994)</option>
+
+            <!-- Horror Movies -->
+            <optgroup label="Horror">
+                <option value="tt4589218">Five Nights At Freddy's (2023)</option>
+                <option value="tt0327597">Coraline (2009)</option>
+                <option value="tt1396484">It (2017)</option>
+                <option value="tt7349950">It Chapter Two (2019)</option>
+                <option value="tt0118936">The Sixth Sense (1999)</option>
+                <option value="tt0293564">The Ring (2002)</option>
+                <option value="tt1856010">The Conjuring (2013)</option>
+            </optgroup>
+
+            <!-- Drama Movies -->
+            <optgroup label="Drama">
+                <option value="tt0111161">The Shawshank Redemption (1994)</option>
+                <option value="tt0109830">Forrest Gump (1994)</option>
+                <option value="tt0110912">Pulp Fiction (1994)</option>
+                <option value="tt1201607">The Pursuit of Happyness (2006)</option>
+                <option value="tt0268978">A Beautiful Mind (2001)</option>
+            </optgroup>
+
+            <!-- Crime Movies -->
+            <optgroup label="Crime">
+                <option value="tt0068646">The Godfather (1972)</option>
+                <option value="tt0071562">The Godfather Part II (1974)</option>
+                <option value="tt0099685">Goodfellas (1990)</option>
+                <option value="tt0137523">Fight Club (1999)</option>
+            </optgroup>
+
+            <!-- Sci-Fi Movies -->
+            <optgroup label="Sci-Fi">
+                <option value="tt0468569">The Dark Knight (2008)</option>
+                <option value="tt0816692">Interstellar (2014)</option>
+                <option value="tt1375666">Inception (2010)</option>
+                <option value="tt0133093">The Matrix (1999)</option>
+                <option value="tt0848228">The Avengers (2012)</option>
+                <option value="tt0107290">Jurassic Park (1993)</option>
+                <!-- Alien Franchise -->
+                <option value="tt0078748">Alien (1979)</option>
+                <option value="tt0089881">Aliens (1986)</option>
+                <option value="tt0090605">Alien 3 (1992)</option>
+                <option value="tt0118583">Alien: Resurrection (1997)</option>
+                <option value="tt1808556">Prometheus (2012)</option>
+                <option value="tt4313130">Alien: Covenant (2017)</option>
+            </optgroup>
+
+            <!-- Adventure Movies -->
+            <optgroup label="Adventure">
+                <option value="tt0080684">Star Wars: Episode IV - A New Hope (1977)</option>
+                <option value="tt0120737">The Lord of the Rings: The Fellowship of the Ring (2001)</option>
+                <option value="tt0848228">Jurassic Park (1993)</option>
+                <option value="tt0325980">Pirates of the Caribbean: The Curse of the Black Pearl (2003)</option>
+            </optgroup>
+
+            <!-- Action Movies -->
+            <optgroup label="Action">
+                <option value="tt0234215">The Matrix Reloaded (2003)</option>
+                <option value="tt1392190">Mad Max: Fury Road (2015)</option>
+                <option value="tt0095016">Die Hard (1988)</option>
+                <option value="tt0103064">Terminator 2: Judgment Day (1991)</option>
+                <!-- Predator Franchise -->
+                <option value="tt0093773">Predator (1987)</option>
+                <option value="tt0100403">Predator 2 (1990)</option>
+                <option value="tt1424381">Predators (2010)</option>
+                <option value="tt4520988">The Predator (2018)</option>
+            </optgroup>
+
+            <!-- Animated Movies -->
+            <optgroup label="Animated">
+                <option value="tt0114709">Toy Story (1995)</option>
+                <option value="tt1670334">Spider-Man: Into the Spider-Verse (2018)</option>
+                <option value="tt0118715">The Lion King (1994)</option>
+                <option value="tt2294449">Frozen (2013)</option>
+            </optgroup>
         </select>
         <iframe id="movieFrame" src="" allowfullscreen></iframe>
     </div>
@@ -85,7 +166,7 @@
 
             // Show movie selection options
             showOptionsBtn.addEventListener('click', () => {
-                movieSelect.style.display = 'block';
+                movieSelect.classList.add('show');
                 showOptionsBtn.style.display = 'none';
             });
 
@@ -94,18 +175,29 @@
                 const selectedID = event.target.value;
                 if (selectedID) {
                     const movieURL = `https://vidsrc.xyz/embed/movie/${selectedID}`;
-                    movieFrame.src = movieURL;
-                    movieSelect.style.display = 'none';
+                    movieFrame.style.opacity = 0;
+                    setTimeout(() => {
+                        movieFrame.src = movieURL;
+                        movieFrame.style.opacity = 1;
+                    }, 300);
+                    movieSelect.classList.remove('show');
+                    showOptionsBtn.style.display = 'block';
                 }
             });
 
             // Show options again when pressing the Escape key
             document.addEventListener('keydown', (event) => {
                 if (event.key === 'Escape') {
-                    movieSelect.style.display = 'block';
+                    movieSelect.classList.remove('show');
                     showOptionsBtn.style.display = 'block';
                     movieFrame.src = ''; // Clear iframe content
                 }
+            });
+        });
+    </script>
+</body>
+</html>
+
             });
         });
     </script>
