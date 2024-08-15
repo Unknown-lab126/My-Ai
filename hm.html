@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple HTML Proxy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        iframe {
+            width: 100%;
+            height: 80vh;
+            border: none;
+            border-radius: 8px;
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simple HTML Proxy</h1>
+        <input type="text" id="urlInput" placeholder="Enter URL to proxy">
+        <button onclick="loadUrl()">Load URL</button>
+        <iframe id="proxyFrame" src=""></iframe>
+    </div>
+
+    <script>
+        function loadUrl() {
+            const urlInput = document.getElementById('urlInput');
+            const proxyFrame = document.getElementById('proxyFrame');
+            const url = urlInput.value;
+
+            if (url) {
+                try {
+                    // Directly setting src of iframe to the URL (might face CORS issues)
+                    proxyFrame.src = url;
+                } catch (error) {
+                    console.error("Error loading URL:", error);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
