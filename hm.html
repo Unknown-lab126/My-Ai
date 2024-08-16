@@ -3,77 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple HTML Proxy</title>
+    <title>Clicker Tycoon Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f5f5f5;
-        }
-        .container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 800px;
             text-align: center;
+            background-color: #e0f7fa;
+            padding: 20px;
         }
-        input[type="text"] {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        #game {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         button {
-            padding: 10px;
-            background-color: #007bff;
-            border: none;
-            color: #fff;
-            border-radius: 4px;
-            cursor: pointer;
+            padding: 10px 20px;
             font-size: 16px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        iframe {
-            width: 100%;
-            height: 80vh;
-            border: none;
-            border-radius: 8px;
-            display: block;
             margin-top: 10px;
+            cursor: pointer;
+        }
+        #upgrades {
+            margin-top: 20px;
+        }
+        .upgrade {
+            margin: 10px 0;
+        }
+        .upgrade button {
+            font-size: 14px;
+        }
+        .info {
+            font-size: 18px;
+            margin: 20px 0;
+        }
+        .achievements {
+            margin-top: 20px;
+        }
+        .achievement {
+            margin: 5px 0;
+        }
+        .achievement.completed {
+            color: green;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Simple HTML Proxy</h1>
-        <input type="text" id="urlInput" placeholder="Enter URL to proxy">
-        <button onclick="loadUrl()">Load URL</button>
-        <iframe id="proxyFrame" src=""></iframe>
+    <div id="game">
+        <h1>Clicker Tycoon</h1>
+        <p class="info">Money: $<span id="money">0</span></p>
+        <p class="info">Click Power: <span id="clickPower">1</span></p>
+        <button onclick="earnMoney()">Click Me!</button>
+        <div id="upgrades">
+            <div class="upgrade">
+                <button onclick="buyUpgrade('clickPower')">Upgrade Click Power ($10)</button>
+            </div>
+            <div class="upgrade">
+                <button onclick="buyUpgrade('autoClicker')">Buy Auto Clicker ($100)</button>
+            </div>
+            <div class="upgrade">
+                <button onclick="buyUpgrade('clickMultiplier')">Upgrade Click Multiplier ($500)</button>
+            </div>
+        </div>
+        <div class="achievements">
+            <h2>Achievements</h2>
+            <div class="achievement" id="achievement1">First Click!</div>
+            <div class="achievement" id="achievement2">Rich Clicker</div>
+        </div>
+        <p id="status"></p>
     </div>
-
     <script>
-        function loadUrl() {
-            const urlInput = document.getElementById('urlInput').value;
-            const proxyFrame = document.getElementById('proxyFrame');
+        // JavaScript code
+        let money = 0;
+        let clickPower = 1;
+        let clickMultiplier = 1;
+        let autoClicker = 0;
 
-            if (urlInput) {
-                // Add a protocol if not provided
-                const url = urlInput.startsWith('http://') || urlInput.startsWith('https://') 
-                    ? urlInput 
-                    : 'http://' + urlInput;
+        // Load saved game state
+        window.onload = function() {
+            const savedMoney = localStorage.getItem('money');
+            if (savedMoney) {
+                money = parseInt(savedMoney);
+            }
+            updateUI();
+        };
 
-                proxyFrame.src = url;
+        function earnMoney() {
+            money += clickPower * clickMultiplier;
+            updateUI();
+            checkAchievements();
+        }
+
+        function buyUpgrade(upgradeType) {
+            if (upgradeType === 'clickPower') {
+                if (money >= 10) {
+                    money -= 10;
+                    clickPower += 1;
+                } else {
+                    document.getElementById('status').textContent = 'Not enough money!';
+                }
+            } else if (upgradeType === 'autoClicker') {
+                if (money >= 100) {
+                    money -= 100;
+                    autoClicker += 1;
+                    document.getElementById('status').textContent = 'Auto Clicker Purchased!';
+                } else {
+                    document.getElementById('status').textContent = 'Not enough money!';
+                }
+            } else if (upgradeType === 'clickMultiplier') {
+                if (money >= 500) {
+                    money -= 500;
+                    clickMultiplier += 1;
+                    document.getElementById('status').textContent = 'Click Multiplier Upgraded!';
+                } else {
+                    document.getElementById('status').textContent = 'Not enough money!';
+                }
+            }
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('money').textContent = money;
+            document.getElementById('clickPower').textContent = clickPower;
+            // Save game state
+            localStorage.setItem('money', money);
+        }
+
+        function checkAchievements() {
+            if (money >= 10 && !document.getElementById('achievement1').classList.contains('completed')) {
+                document.getElementById('achievement1').classList.add('completed');
+                document.getElementById('achievement1').textContent = 'First Click!';
+            }
+            if (money >= 1000 && !document.getElementById('achievement2').classList.contains('completed')) {
+                document.getElementById('achievement2').classList.add('completed');
+                document.getElementById('achievement2').textContent = 'Rich Clicker!';
             }
         }
+
+        // Auto Clicker logic
+        setInterval(() => {
+            if (autoClicker > 0) {
+                money += autoClicker;
+                updateUI();
+            }
+        }, 1000);
+
     </script>
 </body>
 </html>
