@@ -55,16 +55,20 @@
         <h1>Clicker Tycoon</h1>
         <p class="info">Money: $<span id="money">0</span></p>
         <p class="info">Click Power: <span id="clickPower">1</span></p>
+        <p class="info">Current Stage: <span id="stage">1</span></p>
         <button onclick="earnMoney()">Click Me!</button>
         <div id="upgrades">
             <div class="upgrade">
-                <button onclick="buyUpgrade('clickPower')">Upgrade Click Power ($10)</button>
+                <button onclick="buyUpgrade('clickPower')">Upgrade Click Power ($<span id="clickPowerCost">10</span>)</button>
             </div>
             <div class="upgrade">
-                <button onclick="buyUpgrade('autoClicker')">Buy Auto Clicker ($100)</button>
+                <button onclick="buyUpgrade('autoClicker')">Buy Auto Clicker ($<span id="autoClickerCost">100</span>)</button>
             </div>
             <div class="upgrade">
-                <button onclick="buyUpgrade('clickMultiplier')">Upgrade Click Multiplier ($500)</button>
+                <button onclick="buyUpgrade('clickMultiplier')">Upgrade Click Multiplier ($<span id="clickMultiplierCost">500</span>)</button>
+            </div>
+            <div class="upgrade">
+                <button onclick="advanceStage()">Advance to Next Stage ($<span id="stageCost">1000</span>)</button>
             </div>
         </div>
         <div class="achievements">
@@ -80,13 +84,15 @@
         let clickPower = 1;
         let clickMultiplier = 1;
         let autoClicker = 0;
+        let stage = 1;
+        let stageCost = 1000;
 
         // Load saved game state
         window.onload = function() {
             const savedMoney = localStorage.getItem('money');
-            if (savedMoney) {
-                money = parseInt(savedMoney);
-            }
+            const savedStage = localStorage.getItem('stage');
+            if (savedMoney) money = parseInt(savedMoney);
+            if (savedStage) stage = parseInt(savedStage);
             updateUI();
         };
 
@@ -97,24 +103,30 @@
         }
 
         function buyUpgrade(upgradeType) {
+            const costs = {
+                clickPower: 10 * stage,
+                autoClicker: 100 * stage,
+                clickMultiplier: 500 * stage
+            };
+
             if (upgradeType === 'clickPower') {
-                if (money >= 10) {
-                    money -= 10;
+                if (money >= costs.clickPower) {
+                    money -= costs.clickPower;
                     clickPower += 1;
                 } else {
                     document.getElementById('status').textContent = 'Not enough money!';
                 }
             } else if (upgradeType === 'autoClicker') {
-                if (money >= 100) {
-                    money -= 100;
+                if (money >= costs.autoClicker) {
+                    money -= costs.autoClicker;
                     autoClicker += 1;
                     document.getElementById('status').textContent = 'Auto Clicker Purchased!';
                 } else {
                     document.getElementById('status').textContent = 'Not enough money!';
                 }
             } else if (upgradeType === 'clickMultiplier') {
-                if (money >= 500) {
-                    money -= 500;
+                if (money >= costs.clickMultiplier) {
+                    money -= costs.clickMultiplier;
                     clickMultiplier += 1;
                     document.getElementById('status').textContent = 'Click Multiplier Upgraded!';
                 } else {
@@ -124,11 +136,27 @@
             updateUI();
         }
 
+        function advanceStage() {
+            if (money >= stageCost) {
+                money -= stageCost;
+                stage += 1;
+                stageCost = 1000 * stage;
+                updateUI();
+            } else {
+                document.getElementById('status').textContent = 'Not enough money to advance!';
+            }
+        }
+
         function updateUI() {
             document.getElementById('money').textContent = money;
             document.getElementById('clickPower').textContent = clickPower;
-            // Save game state
+            document.getElementById('clickPowerCost').textContent = 10 * stage;
+            document.getElementById('autoClickerCost').textContent = 100 * stage;
+            document.getElementById('clickMultiplierCost').textContent = 500 * stage;
+            document.getElementById('stage').textContent = stage;
+            document.getElementById('stageCost').textContent = stageCost;
             localStorage.setItem('money', money);
+            localStorage.setItem('stage', stage);
         }
 
         function checkAchievements() {
