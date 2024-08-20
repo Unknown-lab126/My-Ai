@@ -108,6 +108,8 @@
         let autoClicker = 0;
         let stage = 1;
         let stageCost = 1000;
+        let autoClickerInterval = 1000; // Initial interval in milliseconds
+        let autoClickAmount = 1; // Initial amount added per interval
 
         // Load saved game state
         window.onload = function() {
@@ -143,6 +145,7 @@
                     money -= costs.autoClicker;
                     autoClicker += 1;
                     document.getElementById('status').textContent = 'Auto Clicker Purchased!';
+                    adjustAutoClicker();
                 } else {
                     document.getElementById('status').textContent = 'Not enough money!';
                 }
@@ -164,6 +167,7 @@
                 stage += 1;
                 stageCost = 1000 * stage;
                 updateUI();
+                adjustAutoClicker(); // Update auto clicker settings for new stage
             } else {
                 document.getElementById('status').textContent = 'Not enough money to advance!';
             }
@@ -199,19 +203,39 @@
             autoClicker = 0;
             stage = 1;
             stageCost = 1000;
+            autoClickerInterval = 1000;
+            autoClickAmount = 1;
             localStorage.removeItem('money');
             localStorage.removeItem('stage');
             updateUI();
             document.getElementById('status').textContent = 'Game reset!';
         }
 
-        // Auto Clicker logic
-        setInterval(() => {
+        function adjustAutoClicker() {
+            // Adjust auto clicker settings based on the current stage
+            // Increase auto clicker amount and reduce interval
+            autoClickAmount = stage;
+            autoClickerInterval = Math.max(100, 1000 - stage * 50); // Minimum interval of 100ms
+
+            // Clear existing interval
+            clearInterval(autoClickerIntervalId);
+
+            // Set new interval
+            autoClickerIntervalId = setInterval(() => {
+                if (autoClicker > 0) {
+                    money += autoClickAmount * autoClicker;
+                    updateUI();
+                }
+            }, autoClickerInterval);
+        }
+
+        let autoClickerIntervalId = setInterval(() => {
             if (autoClicker > 0) {
-                money += autoClicker;
+                money += autoClickAmount * autoClicker;
                 updateUI();
             }
-        }, 1000);
+        }, autoClickerInterval);
+
     </script>
 </body>
 </html>
