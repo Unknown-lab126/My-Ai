@@ -9,6 +9,7 @@
             font-family: Arial, sans-serif;
             text-align: center;
             background-color: #e0f7fa;
+            margin: 0;
             padding: 20px;
         }
         #game {
@@ -16,30 +17,45 @@
             margin: 0 auto;
             padding: 20px;
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #00796b;
+            margin-bottom: 10px;
         }
         button {
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-size: 16px;
-            margin-top: 10px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
+            background-color: #00796b;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #004d40;
         }
         #upgrades {
             margin-top: 20px;
         }
         .upgrade {
-            margin: 10px 0;
+            margin: 15px 0;
         }
         .upgrade button {
             font-size: 14px;
         }
         .info {
-            font-size: 18px;
-            margin: 20px 0;
+            font-size: 20px;
+            margin: 15px 0;
+            color: #004d40;
         }
         .achievements {
             margin-top: 20px;
+            font-size: 18px;
+            color: #004d40;
         }
         .achievement {
             margin: 5px 0;
@@ -47,6 +63,12 @@
         .achievement.completed {
             color: green;
             font-weight: bold;
+        }
+        #reset-button {
+            background-color: #d32f2f;
+        }
+        #reset-button:hover {
+            background-color: #b71c1c;
         }
     </style>
 </head>
@@ -76,10 +98,10 @@
             <div class="achievement" id="achievement1">First Click!</div>
             <div class="achievement" id="achievement2">Rich Clicker</div>
         </div>
+        <button id="reset-button" onclick="resetGame()">Reset Game</button>
         <p id="status"></p>
     </div>
     <script>
-        // JavaScript code
         let money = 0;
         let clickPower = 1;
         let clickMultiplier = 1;
@@ -170,6 +192,19 @@
             }
         }
 
+        function resetGame() {
+            money = 0;
+            clickPower = 1;
+            clickMultiplier = 1;
+            autoClicker = 0;
+            stage = 1;
+            stageCost = 1000;
+            localStorage.removeItem('money');
+            localStorage.removeItem('stage');
+            updateUI();
+            document.getElementById('status').textContent = 'Game reset!';
+        }
+
         // Auto Clicker logic
         setInterval(() => {
             if (autoClicker > 0) {
@@ -177,7 +212,6 @@
                 updateUI();
             }
         }, 1000);
-
     </script>
 </body>
 </html>
