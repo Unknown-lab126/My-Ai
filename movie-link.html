@@ -13,7 +13,7 @@
             height: 100vh;
             background-color: #f5f5f5;
             margin: 0;
-            overflow: hidden; /* Prevents scrollbars from appearing */
+            overflow: hidden;
         }
         .container {
             background: #fff;
@@ -25,10 +25,10 @@
             height: 80vh;
             position: relative;
             overflow: hidden;
-            transition: transform 0.3s ease-in-out; /* Smooth animation for container */
+            transition: transform 0.3s ease-in-out;
         }
         .container:hover {
-            transform: scale(1.02); /* Slight zoom effect on hover */
+            transform: scale(1.02);
         }
         select {
             width: 100%;
@@ -36,7 +36,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             margin-bottom: 10px;
-            display: none; /* Hidden initially */
+            display: none;
             opacity: 0;
             transition: opacity 0.3s ease-in-out;
         }
@@ -51,7 +51,8 @@
             border-radius: 8px;
             transition: opacity 0.3s ease-in-out;
         }
-        #showOptionsBtn {
+        #showOptionsBtn,
+        #gameBtn {
             padding: 10px;
             background-color: #007bff;
             border: none;
@@ -62,11 +63,13 @@
             margin-bottom: 10px;
             transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
         }
-        #showOptionsBtn:hover {
+        #showOptionsBtn:hover,
+        #gameBtn:hover {
             background-color: #0056b3;
-            transform: scale(1.05); /* Slight scale effect on hover */
+            transform: scale(1.05);
         }
-        #showOptionsBtn:focus {
+        #showOptionsBtn:focus,
+        #gameBtn:focus {
             outline: none;
         }
         #fullscreenBtn {
@@ -85,9 +88,8 @@
         #fullscreenBtn:hover {
             background-color: #0056b3;
         }
-        /* Modal styles */
         #passcodeModal {
-            display: none; /* Hidden by default */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -126,11 +128,48 @@
         #passcodeModalContent button:hover {
             background-color: #0056b3;
         }
+        /* Game section styles */
+        #gameSection {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            z-index: 900;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        #gameSection iframe {
+            width: 100%;
+            height: 100%;
+      
+        #backBtn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 8px 12px;
+            transition: background-color 0.3s ease-in-out;
+        }
+        #backBtn:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <button id="showOptionsBtn">Select a Movie</button>
+        <button id="gameBtn">Play Game</button>
         <button id="fullscreenBtn">Fullscreen</button>
         <select id="movieSelect" aria-label="Select a movie">
             <option value="" disabled selected>Select a movie</option>
@@ -182,21 +221,19 @@
                 <option value="tt0848228">The Avengers (2012)</option>
                 <option value="tt0107290">Jurassic Park (1993)</option>
                 <option value="tt0370263">Alien vs. Predator (2004)</option>
-                <option value="tt0758730">Aliens vs. Predator: Requiem (2007)</option>
-                <option value="tt0120201">Starship Troopers (1997)</option>
-                <option value="tt1182345">Moon (2009)</option>
-                <option value="tt3659388">The Martian (2015)</option>
-                <option value="tt0859165">Venom (2018)</option>
+                <option value="tt0758730">Blade Runner 2049 (2017)</option>
+                <option value="tt0181689">The Fifth Element (1997)</option>
             </optgroup>
 
-            <!-- Adventure Movies -->
-            <optgroup label="Adventure">
-                <option value="tt0076759">Star Wars: Episode IV - A New Hope (1977)</option>
+            <!-- Fantasy Movies -->
+            <optgroup label="Fantasy">
                 <option value="tt0120737">The Lord of the Rings: The Fellowship of the Ring (2001)</option>
-                <option value="tt0107290">Jurassic Park (1993)</option>
-                <option value="tt0325980">Pirates of the Caribbean: The Curse of the Black Pearl (2003)</option>
-                <option value="tt0363969">King Kong (2005)</option>
-                <option value="tt0115415">Jumanji (1995)</option>
+                <option value="tt0167261">The Lord of the Rings: The Two Towers (2002)</option>
+                <option value="tt0167260">The Lord of the Rings: The Return of the King (2003)</option>
+                <option value="tt0114709">Toy Story (1995)</option>
+                <option value="tt0372784">Batman Begins (2005)</option>
+                <option value="tt0121766">Mulan (1998)</option>
+                <option value="tt0120915">Hercules (1997)</option>
                 <option value="tt0363771">The Chronicles of Narnia: The Lion, the Witch and the Wardrobe (2005)</option>
             </optgroup>
 
@@ -226,9 +263,14 @@
                 <option value="tt0266543">Finding Nemo (2003)</option>
                 <option value="tt0317705">The Incredibles (2004)</option>
                 <option value="tt0103639">Aladdin (1992)</option>
+                <option value="tt0458290">Moana (2016)</option>
+                <option value="tt1979376">Encanto (2021)</option>
+                <option value="tt0121766">Mulan (1998)</option>
+                <option value="tt0120915">Hercules (1997)</option>
             </optgroup>
         </select>
         <iframe id="movieFrame" src="" allowfullscreen aria-label="Movie Player"></iframe>
+
         <!-- Modal for passcode input -->
         <div id="passcodeModal">
             <div id="passcodeModalContent">
@@ -236,6 +278,14 @@
                 <input type="password" id="passcodeInput" placeholder="Enter passcode" aria-label="Passcode Input">
                 <button id="passcodeSubmitBtn">Submit</button>
             </div>
+        </div>
+
+        <!-- Game section -->
+        <div id="gameSection">
+            <button id="backBtn">Back</button>
+            <h2>Game Placeholder</h2>
+            <!-- Replace with your game iframe or embed code -->
+            <iframe src="https://mathstudy.dev/gba/" allowfullscreen></iframe>
         </div>
     </div>
 
@@ -248,6 +298,9 @@
             const passcodeModal = document.getElementById('passcodeModal');
             const passcodeInput = document.getElementById('passcodeInput');
             const passcodeSubmitBtn = document.getElementById('passcodeSubmitBtn');
+            const gameBtn = document.getElementById('gameBtn');
+            const gameSection = document.getElementById('gameSection');
+            const backBtn = document.getElementById('backBtn');
 
             // Show modal on button click
             showOptionsBtn.addEventListener('click', () => {
@@ -281,6 +334,19 @@
                     movieSelect.classList.remove('show');
                     showOptionsBtn.style.display = 'block';
                 }
+            });
+
+            // Show game section
+            gameBtn.addEventListener('click', () => {
+                gameSection.style.display = 'flex';
+                movieSelect.classList.remove('show');
+                movieFrame.src = ''; // Clear iframe content
+            });
+
+            // Back button to go back to movie section
+            backBtn.addEventListener('click', () => {
+                gameSection.style.display = 'none';
+                showOptionsBtn.style.display = 'block';
             });
 
             // Close modal if clicking outside of it
