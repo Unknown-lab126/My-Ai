@@ -85,11 +85,11 @@
         #fullscreenBtn:hover {
             background-color: #0056b3;
         }
-        /* Hidden passcode input */
+        #passcodeForm {
+            display: none; /* Hidden by default */
+        }
         #passcodeInput {
-            position: absolute;
-            left: -9999px; /* Move out of view */
-            opacity: 0; /* Hide visually */
+            display: none; /* Hidden by default */
         }
     </style>
 </head>
@@ -97,6 +97,9 @@
     <div class="container">
         <button id="showOptionsBtn">Select a Movie</button>
         <button id="fullscreenBtn">Fullscreen</button>
+        <form id="passcodeForm">
+            <input type="password" id="passcodeInput" placeholder="Enter passcode">
+        </form>
         <select id="movieSelect" aria-label="Select a movie">
             <option value="" disabled selected>Select a movie</option>
 
@@ -132,6 +135,7 @@
                 <option value="tt0068646">The Godfather (1972)</option>
                 <option value="tt0071562">The Godfather Part II (1974)</option>
                 <option value="tt0099685">Goodfellas (1990)</option>
+                <option value="tt0137523">Fight Club (1999)</option>
                 <option value="tt0443706">Zodiac (2007)</option>
                 <option value="tt0114814">The Usual Suspects (1995)</option>
                 <option value="tt0094226">The Untouchables (1987)</option>
@@ -174,7 +178,8 @@
                 <option value="tt3829266">The Predator (2018)</option>
                 <option value="tt0100403">Predator 2 (1990)</option>
                 <option value="tt1424381">Predators (2010)</option>
-                <option value="tt0103644">Aliens (1986)</option>
+                <option value="tt0103644">Aliens (2010)</option>
+                <option value="tt0266697">Kill Bill: Vol. 1 (2003)</option>
                 <option value="tt0258463">The Bourne Identity (2002)</option>
                 <option value="tt0456146">Casino Royale (2006)</option>
                 <option value="tt0120812">Rush Hour (1998)</option>
@@ -193,68 +198,58 @@
                 <option value="tt0103639">Aladdin (1992)</option>
             </optgroup>
         </select>
-        <iframe id="movieFrame" src="" allowfullscreen aria-label="Movie Player"></iframe>
-        <!-- Hidden passcode input field -->
-        <input type="text" id="passcodeInput" aria-label="Passcode Input">
+        <iframe id="movieFrame" src="" title="Movie Player"></iframe>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const showOptionsBtn = document.getElementById('showOptionsBtn');
-            const movieSelect = document.getElementById('movieSelect');
-            const movieFrame = document.getElementById('movieFrame');
-            const fullscreenBtn = document.getElementById('fullscreenBtn');
+        // Function to handle passcode input
+        function handlePasscode() {
+            const passcode = '1234'; // Define your passcode here
             const passcodeInput = document.getElementById('passcodeInput');
+            const passcodeForm = document.getElementById('passcodeForm');
+            
+            // Show passcode input form
+            passcodeForm.style.display = 'block';
+            passcodeInput.focus();
 
-            // Show movie selection options
-            showOptionsBtn.addEventListener('click', () => {
-                passcodeInput.focus(); // Focus on hidden input to prompt passcode
-                const passcode = prompt("Enter passcode to access the movie selection:");
-                if (passcode === "movie_lol") {
-                    movieSelect.classList.add('show');
-                    showOptionsBtn.style.display = 'none';
-                    alert("Access Granted! Remember to keep the passcode safe.");
+            // Check passcode
+            passcodeInput.addEventListener('blur', () => {
+                const userInput = passcodeInput.value;
+                if (userInput === passcode) {
+                    document.getElementById('movieSelect').classList.add('show');
+                    document.getElementById('showOptionsBtn').style.display = 'none'; // Hide the button
+                    passcodeForm.style.display = 'none'; // Hide the passcode input form
                 } else {
-                    alert("Incorrect passcode. Please try again.");
+                    alert('Incorrect passcode. Access denied.');
                 }
             });
+        }
 
-            // Handle movie selection
-            movieSelect.addEventListener('change', (event) => {
-                const selectedID = event.target.value;
-                if (selectedID) {
-                    const movieURL = `https://vidsrc.xyz/embed/movie/${selectedID}`;
-                    movieFrame.style.opacity = 0;
-                    setTimeout(() => {
-                        movieFrame.src = movieURL;
-                        movieFrame.style.opacity = 1;
-                    }, 300);
-                    movieSelect.classList.remove('show');
-                    showOptionsBtn.style.display = 'block';
-                }
-            });
+        // Event listener for the "Select a Movie" button
+        document.getElementById('showOptionsBtn').addEventListener('click', function() {
+            handlePasscode();
+        });
 
-            // Show options again when pressing the Escape key
-            document.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape') {
-                    movieSelect.classList.remove('show');
-                    showOptionsBtn.style.display = 'block';
-                    movieFrame.src = ''; // Clear iframe content
-                }
-            });
+        // Event listener for movie selection
+        document.getElementById('movieSelect').addEventListener('change', function() {
+            const selectedValue = this.value;
+            if (selectedValue) {
+                document.getElementById('movieFrame').src = `https://vidsrc.xyz/embed/movie/${selectedValue}`;
+            }
+        });
 
-            // Toggle fullscreen mode
-            fullscreenBtn.addEventListener('click', () => {
-                if (movieFrame.requestFullscreen) {
-                    movieFrame.requestFullscreen();
-                } else if (movieFrame.mozRequestFullScreen) { // Firefox
-                    movieFrame.mozRequestFullScreen();
-                } else if (movieFrame.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                    movieFrame.webkitRequestFullscreen();
-                } else if (movieFrame.msRequestFullscreen) { // IE/Edge
-                    movieFrame.msRequestFullscreen();
-                }
-            });
+        // Event listener for fullscreen button
+        document.getElementById('fullscreenBtn').addEventListener('click', function() {
+            const iframe = document.getElementById('movieFrame');
+            if (iframe.requestFullscreen) {
+                iframe.requestFullscreen();
+            } else if (iframe.mozRequestFullScreen) { /* Firefox */
+                iframe.mozRequestFullScreen();
+            } else if (iframe.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+                iframe.webkitRequestFullscreen();
+            } else if (iframe.msRequestFullscreen) { /* IE/Edge */
+                iframe.msRequestFullscreen();
+            }
         });
     </script>
 </body>
