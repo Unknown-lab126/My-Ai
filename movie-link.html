@@ -75,6 +75,47 @@
             margin-top: 10px;
             display: none; /* Hidden initially */
         }
+        .passcode-dialog {
+            display: none; /* Hidden initially */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        .passcode-dialog input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .passcode-dialog button {
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .passcode-dialog button:hover {
+            background-color: #0056b3;
+        }
+        .overlay {
+            display: none; /* Hidden initially */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
     </style>
 </head>
 <body>
@@ -191,6 +232,12 @@
         <div id="reminder" class="reminder">
             <p>Don't forget the passcode!</p>
         </div>
+        <div id="overlay" class="overlay"></div>
+        <div id="passcodeDialog" class="passcode-dialog">
+            <h2>Enter Passcode</h2>
+            <input type="password" id="passcodeInput" placeholder="Passcode">
+            <button id="passcodeSubmit">Submit</button>
+        </div>
     </div>
 
     <script>
@@ -199,22 +246,45 @@
             const movieSelect = document.getElementById('movieSelect');
             const movieFrame = document.getElementById('movieFrame');
             const reminder = document.getElementById('reminder');
+            const passcodeDialog = document.getElementById('passcodeDialog');
+            const overlay = document.getElementById('overlay');
+            const passcodeInput = document.getElementById('passcodeInput');
+            const passcodeSubmit = document.getElementById('passcodeSubmit');
             const correctPasscode = 'movie_lol'; // The correct passcode
 
-            function promptForPasscode() {
-                const passcode = prompt('Enter the passcode:');
+            function showPasscodeDialog() {
+                passcodeDialog.style.display = 'block';
+                overlay.style.display = 'block';
+                passcodeInput.focus();
+            }
+
+            function hidePasscodeDialog() {
+                passcodeDialog.style.display = 'none';
+                overlay.style.display = 'none';
+            }
+
+            function handlePasscodeSubmission() {
+                const passcode = passcodeInput.value;
                 if (passcode === correctPasscode) {
                     movieSelect.classList.add('show');
                     showOptionsBtn.style.display = 'none';
                     reminder.style.display = 'block'; // Show reminder
                     alert('Access Granted');
+                    hidePasscodeDialog();
                 } else {
                     alert('Incorrect passcode. Try again.');
+                    passcodeInput.value = ''; // Clear the input field
                 }
             }
 
-            // Show movie selection options after passcode is validated
-            showOptionsBtn.addEventListener('click', promptForPasscode);
+            // Show passcode dialog on button click
+            showOptionsBtn.addEventListener('click', showPasscodeDialog);
+
+            // Handle passcode submission
+            passcodeSubmit.addEventListener('click', handlePasscodeSubmission);
+
+            // Close dialog on overlay click
+            overlay.addEventListener('click', hidePasscodeDialog);
 
             // Handle movie selection
             movieSelect.addEventListener('change', (event) => {
