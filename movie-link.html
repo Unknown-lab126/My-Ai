@@ -85,11 +85,39 @@
         #fullscreenBtn:hover {
             background-color: #0056b3;
         }
-        #passcodeForm {
+        /* Modal Styles */
+        .modal {
             display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
         }
-        #passcodeInput {
-            display: none; /* Hidden by default */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-width: 500px;
+            border-radius: 8px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -97,9 +125,6 @@
     <div class="container">
         <button id="showOptionsBtn">Select a Movie</button>
         <button id="fullscreenBtn">Fullscreen</button>
-        <form id="passcodeForm">
-            <input type="password" id="passcodeInput" placeholder="Enter passcode">
-        </form>
         <select id="movieSelect" aria-label="Select a movie">
             <option value="" disabled selected>Select a movie</option>
 
@@ -199,57 +224,89 @@
             </optgroup>
         </select>
         <iframe id="movieFrame" src="" title="Movie Player"></iframe>
+
+        <!-- Modal for Passcode Entry -->
+        <div id="passcodeModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Enter Passcode</h2>
+                <input type="password" id="passcodeInput" placeholder="Enter passcode" />
+                <button id="submitPasscode">Submit</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Function to handle passcode input
-        function handlePasscode() {
-            const passcode = '1234'; // Define your passcode here
-            const passcodeInput = document.getElementById('passcodeInput');
-            const passcodeForm = document.getElementById('passcodeForm');
-            
-            // Show passcode input form
-            passcodeForm.style.display = 'block';
-            passcodeInput.focus();
+        document.addEventListener('DOMContentLoaded', () => {
+            const showOptionsBtn = document.getElementById('showOptionsBtn');
+            const movieSelect = document.getElementById('movieSelect');
+            const movieFrame = document.getElementById('movieFrame');
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-            // Check passcode
-            passcodeInput.addEventListener('blur', () => {
+            // Modal and passcode elements
+            const passcodeModal = document.getElementById('passcodeModal');
+            const passcodeInput = document.getElementById('passcodeInput');
+            const submitPasscodeBtn = document.getElementById('submitPasscode');
+            const closeModal = document.querySelector('.close');
+
+            // Show passcode modal
+            showOptionsBtn.addEventListener('click', () => {
+                passcodeModal.style.display = 'block';
+                passcodeInput.focus();
+            });
+
+            // Handle passcode submission
+            submitPasscodeBtn.addEventListener('click', () => {
+                const passcode = '1234'; // Define your passcode here
                 const userInput = passcodeInput.value;
                 if (userInput === passcode) {
-                    document.getElementById('movieSelect').classList.add('show');
-                    document.getElementById('showOptionsBtn').style.display = 'none'; // Hide the button
-                    passcodeForm.style.display = 'none'; // Hide the passcode input form
+                    movieSelect.classList.add('show');
+                    showOptionsBtn.style.display = 'none';
+                    passcodeModal.style.display = 'none';
                 } else {
                     alert('Incorrect passcode. Access denied.');
                 }
             });
-        }
 
-        // Event listener for the "Select a Movie" button
-        document.getElementById('showOptionsBtn').addEventListener('click', function() {
-            handlePasscode();
-        });
+            // Close modal when clicking on the close button
+            closeModal.addEventListener('click', () => {
+                passcodeModal.style.display = 'none';
+            });
 
-        // Event listener for movie selection
-        document.getElementById('movieSelect').addEventListener('change', function() {
-            const selectedValue = this.value;
-            if (selectedValue) {
-                document.getElementById('movieFrame').src = `https://vidsrc.xyz/embed/movie/${selectedValue}`;
-            }
-        });
+            // Close modal when clicking outside of it
+            window.addEventListener('click', (event) => {
+                if (event.target === passcodeModal) {
+                    passcodeModal.style.display = 'none';
+                }
+            });
 
-        // Event listener for fullscreen button
-        document.getElementById('fullscreenBtn').addEventListener('click', function() {
-            const iframe = document.getElementById('movieFrame');
-            if (iframe.requestFullscreen) {
-                iframe.requestFullscreen();
-            } else if (iframe.mozRequestFullScreen) { /* Firefox */
-                iframe.mozRequestFullScreen();
-            } else if (iframe.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-                iframe.webkitRequestFullscreen();
-            } else if (iframe.msRequestFullscreen) { /* IE/Edge */
-                iframe.msRequestFullscreen();
-            }
+            // Handle movie selection
+            movieSelect.addEventListener('change', (event) => {
+                const selectedID = event.target.value;
+                if (selectedID) {
+                    const movieURL = `https://vidsrc.xyz/embed/movie/${selectedID}`;
+                    movieFrame.style.opacity = 0;
+                    setTimeout(() => {
+                        movieFrame.src = movieURL;
+                        movieFrame.style.opacity = 1;
+                    }, 300);
+                    movieSelect.classList.remove('show');
+                    showOptionsBtn.style.display = 'block';
+                }
+            });
+
+            // Toggle fullscreen mode
+            fullscreenBtn.addEventListener('click', () => {
+                if (movieFrame.requestFullscreen) {
+                    movieFrame.requestFullscreen();
+                } else if (movieFrame.mozRequestFullScreen) { // Firefox
+                    movieFrame.mozRequestFullScreen();
+                } else if (movieFrame.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                    movieFrame.webkitRequestFullscreen();
+                } else if (movieFrame.msRequestFullscreen) { // IE/Edge
+                    movieFrame.msRequestFullscreen();
+                }
+            });
         });
     </script>
 </body>
