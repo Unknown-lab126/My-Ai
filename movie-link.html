@@ -69,6 +69,12 @@
         #showOptionsBtn:focus {
             outline: none;
         }
+        .reminder {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none; /* Hidden initially */
+        }
     </style>
 </head>
 <body>
@@ -182,6 +188,9 @@
             </optgroup>
         </select>
         <iframe id="movieFrame" src="" allowfullscreen aria-label="Movie Player"></iframe>
+        <div id="reminder" class="reminder">
+            <p>Don't forget the passcode!</p>
+        </div>
     </div>
 
     <script>
@@ -189,13 +198,23 @@
             const showOptionsBtn = document.getElementById('showOptionsBtn');
             const movieSelect = document.getElementById('movieSelect');
             const movieFrame = document.getElementById('movieFrame');
+            const reminder = document.getElementById('reminder');
+            const correctPasscode = 'movie_lol'; // The correct passcode
 
-            // Show movie selection options
-            showOptionsBtn.addEventListener('click', () => {
-                movieSelect.classList.add('show');
-                showOptionsBtn.style.display = 'none';
-                movieSelect.focus(); // Set focus to select element when displayed
-            });
+            function promptForPasscode() {
+                const passcode = prompt('Enter the passcode:');
+                if (passcode === correctPasscode) {
+                    movieSelect.classList.add('show');
+                    showOptionsBtn.style.display = 'none';
+                    reminder.style.display = 'block'; // Show reminder
+                    alert('Access Granted');
+                } else {
+                    alert('Incorrect passcode. Try again.');
+                }
+            }
+
+            // Show movie selection options after passcode is validated
+            showOptionsBtn.addEventListener('click', promptForPasscode);
 
             // Handle movie selection
             movieSelect.addEventListener('change', (event) => {
