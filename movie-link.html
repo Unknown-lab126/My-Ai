@@ -131,7 +131,7 @@
         /* Game section styles */
         #gameSection {
             display: none;
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -140,13 +140,15 @@
             border-radius: 8px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
             z-index: 900;
-            padding: 20px;
+            padding: 10px;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         #gameSection iframe {
             width: 100%;
-            height: calc(100% - 50px); /* Subtract space for the back button */
-            border: none;
+            height: calc(100% - 50px); /* Adjust to leave space for the back button */
             border-radius: 8px;
         }
         #backBtn {
@@ -161,6 +163,7 @@
             font-size: 16px;
             padding: 8px 12px;
             transition: background-color 0.3s ease-in-out;
+            z-index: 1001; /* Ensure it is above other elements */
         }
         #backBtn:hover {
             background-color: #0056b3;
@@ -187,7 +190,6 @@
                 <option value="tt0081505">The Shining (1980)</option>
                 <option value="tt1259521">The Cabin in the Woods (2012)</option>
             </optgroup>
-
             <!-- Drama Movies -->
             <optgroup label="Drama">
                 <option value="tt0111161">The Shawshank Redemption (1994)</option>
@@ -200,7 +202,6 @@
                 <option value="tt0419887">The Kite Runner (2007)</option>
                 <option value="tt0359950">The Secret Life of Walter Mitty (2013)</option>
             </optgroup>
-
             <!-- Crime Movies -->
             <optgroup label="Crime">
                 <option value="tt0068646">The Godfather (1972)</option>
@@ -211,7 +212,6 @@
                 <option value="tt0094226">The Untouchables (1987)</option>
                 <option value="tt0071315">Chinatown (1974)</option>
             </optgroup>
-
             <!-- Sci-Fi Movies -->
             <optgroup label="Sci-Fi">
                 <option value="tt0468569">The Dark Knight (2008)</option>
@@ -219,12 +219,9 @@
                 <option value="tt1375666">Inception (2010)</option>
                 <option value="tt0133093">The Matrix (1999)</option>
                 <option value="tt0848228">The Avengers (2012)</option>
-                <option value="tt0107290">Jurassic Park (1993)</option>
-                <option value="tt0370263">Alien vs. Predator (2004)</option>
-                <option value="tt0758730">Blade Runner 2049 (2017)</option>
+                <option value="tt0110413">Starship Troopers (1997)</option>
                 <option value="tt0181689">The Fifth Element (1997)</option>
             </optgroup>
-
             <!-- Fantasy Movies -->
             <optgroup label="Fantasy">
                 <option value="tt0120737">The Lord of the Rings: The Fellowship of the Ring (2001)</option>
@@ -236,7 +233,6 @@
                 <option value="tt0120915">Hercules (1997)</option>
                 <option value="tt0363771">The Chronicles of Narnia: The Lion, the Witch and the Wardrobe (2005)</option>
             </optgroup>
-
             <!-- Action Movies -->
             <optgroup label="Action">
                 <option value="tt0234215">The Matrix Reloaded (2003)</option>
@@ -251,7 +247,6 @@
                 <option value="tt0456146">Casino Royale (2006)</option>
                 <option value="tt0120812">Rush Hour (1998)</option>
             </optgroup>
-
             <!-- Animated Movies -->
             <optgroup label="Animated">
                 <option value="tt0114709">Toy Story (1995)</option>
@@ -269,89 +264,110 @@
                 <option value="tt0120915">Hercules (1997)</option>
             </optgroup>
         </select>
+        <iframe id="movieFrame" src="" allowfullscreen aria-label="Movie Player"></iframe>
+
+        <!-- Modal for passcode input -->
+        <div id="passcodeModal">
+            <div id="passcodeModalContent">
+                <h2>Enter Passcode</h2>
+                <input type="password" id="passcodeInput" placeholder="Enter passcode" aria-label="Passcode Input">
+                <button id="passcodeSubmitBtn">Submit</button>
+            </div>
+        </div>
+
+        <!-- Game section -->
         <div id="gameSection">
             <button id="backBtn">Back</button>
-            <iframe src="https://mathstudy.dev/gba/" frameborder="0"></iframe>
-        </div>
-        <iframe id="movieIframe" src="" frameborder="0"></iframe>
-    </div>
-
-    <!-- Passcode Modal -->
-    <div id="passcodeModal">
-        <div id="passcodeModalContent">
-            <h2>Enter Passcode</h2>
-            <input type="password" id="passcodeInput" placeholder="Enter passcode">
-            <button id="submitPasscodeBtn">Submit</button>
+            <iframe src="https://mathstudy.dev/gba/" allowfullscreen></iframe>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const movieSelect = document.getElementById('movieSelect');
-            const movieIframe = document.getElementById('movieIframe');
             const showOptionsBtn = document.getElementById('showOptionsBtn');
-            const gameBtn = document.getElementById('gameBtn');
-            const gameSection = document.getElementById('gameSection');
-            const backBtn = document.getElementById('backBtn');
+            const movieSelect = document.getElementById('movieSelect');
+            const movieFrame = document.getElementById('movieFrame');
             const fullscreenBtn = document.getElementById('fullscreenBtn');
             const passcodeModal = document.getElementById('passcodeModal');
             const passcodeInput = document.getElementById('passcodeInput');
-            const submitPasscodeBtn = document.getElementById('submitPasscodeBtn');
+            const passcodeSubmitBtn = document.getElementById('passcodeSubmitBtn');
+            const gameBtn = document.getElementById('gameBtn');
+            const gameSection = document.getElementById('gameSection');
+            const backBtn = document.getElementById('backBtn');
 
-            // Function to handle movie selection
-            movieSelect.addEventListener('change', (e) => {
-                const movieId = e.target.value;
-                if (movieId) {
-                    movieIframe.src = `https://www.imdb.com/title/${movieId}`;
-                    movieIframe.style.display = 'block';
+            // Show modal on button click
+            showOptionsBtn.addEventListener('click', () => {
+                passcodeModal.style.display = 'flex';
+                passcodeInput.focus();
+            });
+
+            // Handle passcode submission
+            passcodeSubmitBtn.addEventListener('click', () => {
+                const passcode = passcodeInput.value;
+                if (passcode === "movie_lol") {
+                    passcodeModal.style.display = 'none';
+                    movieSelect.classList.add('show');
+                    showOptionsBtn.style.display = 'none';
+                    alert("Access Granted! Remember to keep the passcode safe.");
+                } else {
+                    alert("Incorrect passcode. Please try again.");
                 }
             });
 
-            // Show or hide movie options
-            showOptionsBtn.addEventListener('click', () => {
-                passcodeModal.style.display = 'flex';
+            // Handle movie selection
+            movieSelect.addEventListener('change', (event) => {
+                const selectedID = event.target.value;
+                if (selectedID) {
+                    const movieURL = `https://vidsrc.xyz/embed/movie/${selectedID}`;
+                    movieFrame.style.opacity = 0;
+                    setTimeout(() => {
+                        movieFrame.src = movieURL;
+                        movieFrame.style.opacity = 1;
+                    }, 300);
+                    movieSelect.classList.remove('show');
+                    showOptionsBtn.style.display = 'block';
+                }
             });
 
             // Show game section
             gameBtn.addEventListener('click', () => {
                 gameSection.style.display = 'flex';
-                movieIframe.style.display = 'none';
                 movieSelect.classList.remove('show');
+                movieFrame.src = ''; // Clear iframe content
             });
 
-            // Back to movie viewer
+            // Back button to go back to movie section
             backBtn.addEventListener('click', () => {
                 gameSection.style.display = 'none';
-                movieIframe.style.display = 'block';
+                showOptionsBtn.style.display = 'block';
             });
 
-            // Fullscreen button functionality
+            // Close modal if clicking outside of it
+            window.addEventListener('click', (event) => {
+                if (event.target === passcodeModal) {
+                    passcodeModal.style.display = 'none';
+                }
+            });
+
+            // Show options again when pressing the Escape key
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    movieSelect.classList.remove('show');
+                    showOptionsBtn.style.display = 'block';
+                    movieFrame.src = ''; // Clear iframe content
+                }
+            });
+
+            // Toggle fullscreen mode
             fullscreenBtn.addEventListener('click', () => {
-                if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen();
-                } else if (document.documentElement.mozRequestFullScreen) { // Firefox
-                    document.documentElement.mozRequestFullScreen();
-                } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                    document.documentElement.webkitRequestFullscreen();
-                } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
-                    document.documentElement.msRequestFullscreen();
-                }
-            });
-
-            // Passcode modal functionality
-            submitPasscodeBtn.addEventListener('click', () => {
-                const passcode = passcodeInput.value;
-                if (passcode === '1234') { // Example passcode
-                    passcodeModal.style.display = 'none';
-                    movieSelect.classList.add('show');
-                } else {
-                    alert('Invalid passcode');
-                }
-            });
-
-            passcodeModal.addEventListener('click', (e) => {
-                if (e.target === passcodeModal) {
-                    passcodeModal.style.display = 'none';
+                if (movieFrame.requestFullscreen) {
+                    movieFrame.requestFullscreen();
+                } else if (movieFrame.mozRequestFullScreen) { // Firefox
+                    movieFrame.mozRequestFullScreen();
+                } else if (movieFrame.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                    movieFrame.webkitRequestFullscreen();
+                } else if (movieFrame.msRequestFullscreen) { // IE/Edge
+                    movieFrame.msRequestFullscreen();
                 }
             });
         });
