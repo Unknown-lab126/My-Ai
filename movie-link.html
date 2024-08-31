@@ -131,7 +131,7 @@
         /* Game section styles */
         #gameSection {
             display: none;
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -140,14 +140,15 @@
             border-radius: 8px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
             z-index: 900;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
+            box-sizing: border-box;
         }
         #gameSection iframe {
             width: 100%;
-            height: 100%;
-      
+            height: calc(100% - 50px); /* Subtract space for the back button */
+            border: none;
+            border-radius: 8px;
+        }
         #backBtn {
             position: absolute;
             top: 10px;
@@ -173,7 +174,6 @@
         <button id="fullscreenBtn">Fullscreen</button>
         <select id="movieSelect" aria-label="Select a movie">
             <option value="" disabled selected>Select a movie</option>
-
             <!-- Horror Movies -->
             <optgroup label="Horror">
                 <option value="tt4589218">Five Nights at Freddy's (2023)</option>
@@ -269,112 +269,89 @@
                 <option value="tt0120915">Hercules (1997)</option>
             </optgroup>
         </select>
-        <iframe id="movieFrame" src="" allowfullscreen aria-label="Movie Player"></iframe>
-
-        <!-- Modal for passcode input -->
-        <div id="passcodeModal">
-            <div id="passcodeModalContent">
-                <h2>Enter Passcode</h2>
-                <input type="password" id="passcodeInput" placeholder="Enter passcode" aria-label="Passcode Input">
-                <button id="passcodeSubmitBtn">Submit</button>
-            </div>
-        </div>
-
-        <!-- Game section -->
         <div id="gameSection">
             <button id="backBtn">Back</button>
-            <h2>Game Placeholder</h2>
-            <!-- Replace with your game iframe or embed code -->
-            <iframe src="https://mathstudy.dev/gba/" allowfullscreen></iframe>
+            <iframe src="https://mathstudy.dev/gba/" frameborder="0"></iframe>
+        </div>
+        <iframe id="movieIframe" src="" frameborder="0"></iframe>
+    </div>
+
+    <!-- Passcode Modal -->
+    <div id="passcodeModal">
+        <div id="passcodeModalContent">
+            <h2>Enter Passcode</h2>
+            <input type="password" id="passcodeInput" placeholder="Enter passcode">
+            <button id="submitPasscodeBtn">Submit</button>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const showOptionsBtn = document.getElementById('showOptionsBtn');
             const movieSelect = document.getElementById('movieSelect');
-            const movieFrame = document.getElementById('movieFrame');
-            const fullscreenBtn = document.getElementById('fullscreenBtn');
-            const passcodeModal = document.getElementById('passcodeModal');
-            const passcodeInput = document.getElementById('passcodeInput');
-            const passcodeSubmitBtn = document.getElementById('passcodeSubmitBtn');
+            const movieIframe = document.getElementById('movieIframe');
+            const showOptionsBtn = document.getElementById('showOptionsBtn');
             const gameBtn = document.getElementById('gameBtn');
             const gameSection = document.getElementById('gameSection');
             const backBtn = document.getElementById('backBtn');
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+            const passcodeModal = document.getElementById('passcodeModal');
+            const passcodeInput = document.getElementById('passcodeInput');
+            const submitPasscodeBtn = document.getElementById('submitPasscodeBtn');
 
-            // Show modal on button click
+            // Function to handle movie selection
+            movieSelect.addEventListener('change', (e) => {
+                const movieId = e.target.value;
+                if (movieId) {
+                    movieIframe.src = `https://www.imdb.com/title/${movieId}`;
+                    movieIframe.style.display = 'block';
+                }
+            });
+
+            // Show or hide movie options
             showOptionsBtn.addEventListener('click', () => {
                 passcodeModal.style.display = 'flex';
-                passcodeInput.focus();
-            });
-
-            // Handle passcode submission
-            passcodeSubmitBtn.addEventListener('click', () => {
-                const passcode = passcodeInput.value;
-                if (passcode === "movie_lol") {
-                    passcodeModal.style.display = 'none';
-                    movieSelect.classList.add('show');
-                    showOptionsBtn.style.display = 'none';
-                    alert("Access Granted! Remember to keep the passcode safe.");
-                } else {
-                    alert("Incorrect passcode. Please try again.");
-                }
-            });
-
-            // Handle movie selection
-            movieSelect.addEventListener('change', (event) => {
-                const selectedID = event.target.value;
-                if (selectedID) {
-                    const movieURL = `https://vidsrc.xyz/embed/movie/${selectedID}`;
-                    movieFrame.style.opacity = 0;
-                    setTimeout(() => {
-                        movieFrame.src = movieURL;
-                        movieFrame.style.opacity = 1;
-                    }, 300);
-                    movieSelect.classList.remove('show');
-                    showOptionsBtn.style.display = 'block';
-                }
             });
 
             // Show game section
             gameBtn.addEventListener('click', () => {
                 gameSection.style.display = 'flex';
+                movieIframe.style.display = 'none';
                 movieSelect.classList.remove('show');
-                movieFrame.src = ''; // Clear iframe content
             });
 
-            // Back button to go back to movie section
+            // Back to movie viewer
             backBtn.addEventListener('click', () => {
                 gameSection.style.display = 'none';
-                showOptionsBtn.style.display = 'block';
+                movieIframe.style.display = 'block';
             });
 
-            // Close modal if clicking outside of it
-            window.addEventListener('click', (event) => {
-                if (event.target === passcodeModal) {
-                    passcodeModal.style.display = 'none';
-                }
-            });
-
-            // Show options again when pressing the Escape key
-            document.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape') {
-                    movieSelect.classList.remove('show');
-                    showOptionsBtn.style.display = 'block';
-                    movieFrame.src = ''; // Clear iframe content
-                }
-            });
-
-            // Toggle fullscreen mode
+            // Fullscreen button functionality
             fullscreenBtn.addEventListener('click', () => {
-                if (movieFrame.requestFullscreen) {
-                    movieFrame.requestFullscreen();
-                } else if (movieFrame.mozRequestFullScreen) { // Firefox
-                    movieFrame.mozRequestFullScreen();
-                } else if (movieFrame.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                    movieFrame.webkitRequestFullscreen();
-                } else if (movieFrame.msRequestFullscreen) { // IE/Edge
-                    movieFrame.msRequestFullscreen();
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) { // Firefox
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
+                    document.documentElement.msRequestFullscreen();
+                }
+            });
+
+            // Passcode modal functionality
+            submitPasscodeBtn.addEventListener('click', () => {
+                const passcode = passcodeInput.value;
+                if (passcode === '1234') { // Example passcode
+                    passcodeModal.style.display = 'none';
+                    movieSelect.classList.add('show');
+                } else {
+                    alert('Invalid passcode');
+                }
+            });
+
+            passcodeModal.addEventListener('click', (e) => {
+                if (e.target === passcodeModal) {
+                    passcodeModal.style.display = 'none';
                 }
             });
         });
