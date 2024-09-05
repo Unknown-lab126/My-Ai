@@ -22,7 +22,7 @@
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
             width: 100%;
             max-width: 1200px;
-            height: 80vh;
+            height: 100%;
             position: relative;
             overflow: hidden;
             transition: transform 0.3s ease-in-out;
@@ -78,7 +78,7 @@
         #fullscreenBtn {
             position: absolute;
             top: 10px;
-            right: 10px;
+            right: 50px; /* Moved slightly to the left */
             background-color: #007bff;
             border: none;
             color: #fff;
@@ -171,18 +171,16 @@
         #backBtn:hover {
             background-color: #0056b3;
         }
-        /* Info list styles */
         #infoList {
-            display: none;
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
             background: #fff;
-            padding: 20px;
+            padding: 10px;
             border-radius: 8px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            position: absolute;
-            top: 50px;
-            right: 10px;
-            width: 250px;
-            z-index: 1000;
+            font-size: 14px;
+            max-width: 300px;
         }
         #infoList ul {
             list-style: none;
@@ -192,18 +190,14 @@
         #infoList li {
             margin-bottom: 10px;
         }
-        #infoList strong {
-            display: block;
-            margin-bottom: 5px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <button id="showOptionsBtn">Select a Movie</button>
         <button id="gameBtn">Play Game</button>
+        <button id="infoBtn">Information</button>
         <button id="fullscreenBtn">Fullscreen</button>
-        <button id="infoBtn">Info</button>
         <select id="movieSelect" aria-label="Select a movie">
             <option value="" disabled selected>Select a movie</option>
             <!-- Horror Movies -->
@@ -312,7 +306,7 @@
             <iframe src="https://mathstudy.dev/gba/" allowfullscreen></iframe>
         </div>
 
-        <!-- Info list -->
+        <!-- Information section -->
         <div id="infoList">
             <ul>
                 <li><strong>Select a Movie:</strong> Click the 'Select a Movie' button to choose a movie from the list.</li>
@@ -385,9 +379,9 @@
                 showOptionsBtn.style.display = 'block';
             });
 
-            // Toggle info list
+            // Show/hide information section
             infoBtn.addEventListener('click', () => {
-                infoList.style.display = infoList.style.display === 'block' ? 'none' : 'block';
+                infoList.style.display = (infoList.style.display === 'block') ? 'none' : 'block';
             });
 
             // Close modal if clicking outside of it
@@ -408,14 +402,14 @@
 
             // Toggle fullscreen mode
             fullscreenBtn.addEventListener('click', () => {
-                if (movieFrame.requestFullscreen) {
-                    movieFrame.requestFullscreen();
-                } else if (movieFrame.mozRequestFullScreen) { // Firefox
-                    movieFrame.mozRequestFullScreen();
-                } else if (movieFrame.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                    movieFrame.webkitRequestFullscreen();
-                } else if (movieFrame.msRequestFullscreen) { // IE/Edge
-                    movieFrame.msRequestFullscreen();
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) { // Firefox
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
+                    document.documentElement.msRequestFullscreen();
                 }
             });
         });
