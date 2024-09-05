@@ -41,9 +41,21 @@
             color: white;
             cursor: pointer;
         }
+        #peer-id-container {
+            margin-bottom: 10px;
+        }
+        #peer-id {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
+    <div id="peer-id-container">
+        <input type="text" id="peer-id" placeholder="Enter peer ID to connect" />
+        <button id="connect-button">Connect</button>
+    </div>
     <div id="chat-container">
         <div id="messages"></div>
         <form id="message-form">
@@ -60,8 +72,16 @@
         const messagesContainer = document.getElementById('messages');
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-button');
+        const peerIdInput = document.getElementById('peer-id');
+        const connectButton = document.getElementById('connect-button');
 
         let dataConnection;
+
+        // Display the peer ID for the current peer
+        peer.on('open', (id) => {
+            alert(`Your Peer ID is: ${id}`);
+            console.log(`Your Peer ID is: ${id}`);
+        });
 
         // Handle incoming connections
         peer.on('connection', (conn) => {
@@ -72,18 +92,25 @@
         });
 
         // Connect to another peer
-        function connectToPeer(peerId) {
-            dataConnection = peer.connect(peerId);
-            dataConnection.on('data', (data) => {
-                displayMessage(data);
-            });
-        }
+        connectButton.addEventListener('click', () => {
+            const peerId = peerIdInput.value.trim();
+            if (peerId) {
+                dataConnection = peer.connect(peerId);
+                dataConnection.on('data', (data) => {
+                    displayMessage(data);
+                });
+            } else {
+                alert('Please enter a valid Peer ID.');
+            }
+        });
 
         // Send a message
         function sendMessage(message) {
             if (dataConnection) {
                 dataConnection.send(message);
                 displayMessage(`You: ${message}`);
+            } else {
+                alert('Not connected to any peer.');
             }
         }
 
@@ -103,14 +130,6 @@
                 messageInput.value = '';
             }
         });
-
-        // Prompt for peer ID and connect
-        const peerId = prompt('Enter your peer ID:');
-        if (peerId) {
-            connectToPeer(peerId);
-        } else {
-            alert('Peer ID is required!');
-        }
     </script>
 </body>
 </html>
