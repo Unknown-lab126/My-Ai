@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple WebRTC Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        #chat-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+        #message-form {
+            display: flex;
+        }
+        #message-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        #send-button {
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="messages"></div>
+        <form id="message-form">
+            <input type="text" id="message-input" placeholder="Type your message..." />
+            <button type="button" id="send-button">Send</button>
+        </form>
+    </div>
+
+    <!-- Include PeerJS library -->
+    <script src="https://cdn.peerjs.com/1.4.6/peerjs.min.js"></script>
+
+    <script>
+        const peer = new Peer(); // Create a new PeerJS instance
+        const messagesContainer = document.getElementById('messages');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+
+        let dataConnection;
+
+        // Handle incoming connections
+        peer.on('connection', (conn) => {
+            dataConnection = conn;
+            conn.on('data', (data) => {
+                displayMessage(data);
+            });
+        });
+
+        // Connect to another peer
+        function connectToPeer(peerId) {
+            dataConnection = peer.connect(peerId);
+            dataConnection.on('data', (data) => {
+                displayMessage(data);
+            });
+        }
+
+        // Send a message
+        function sendMessage(message) {
+            if (dataConnection) {
+                dataConnection.send(message);
+                displayMessage(`You: ${message}`);
+            }
+        }
+
+        // Display a message in the chat container
+        function displayMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            messagesContainer.appendChild(messageElement);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to bottom
+        }
+
+        // Event listener for the send button
+        sendButton.addEventListener('click', () => {
+            const message = messageInput.value.trim();
+            if (message) {
+                sendMessage(message);
+                messageInput.value = '';
+            }
+        });
+
+        // Prompt for peer ID and connect
+        const peerId = prompt('Enter your peer ID:');
+        if (peerId) {
+            connectToPeer(peerId);
+        } else {
+            alert('Peer ID is required!');
+        }
+    </script>
+</body>
+</html>
