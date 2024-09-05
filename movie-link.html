@@ -52,7 +52,8 @@
             transition: opacity 0.3s ease-in-out;
         }
         #showOptionsBtn,
-        #gameBtn {
+        #gameBtn,
+        #infoBtn {
             padding: 10px;
             background-color: #007bff;
             border: none;
@@ -64,12 +65,14 @@
             transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
         }
         #showOptionsBtn:hover,
-        #gameBtn:hover {
+        #gameBtn:hover,
+        #infoBtn:hover {
             background-color: #0056b3;
             transform: scale(1.05);
         }
         #showOptionsBtn:focus,
-        #gameBtn:focus {
+        #gameBtn:focus,
+        #infoBtn:focus {
             outline: none;
         }
         #fullscreenBtn {
@@ -168,6 +171,31 @@
         #backBtn:hover {
             background-color: #0056b3;
         }
+        /* Info list styles */
+        #infoList {
+            display: none;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            width: 250px;
+            z-index: 1000;
+        }
+        #infoList ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        #infoList li {
+            margin-bottom: 10px;
+        }
+        #infoList strong {
+            display: block;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -175,6 +203,7 @@
         <button id="showOptionsBtn">Select a Movie</button>
         <button id="gameBtn">Play Game</button>
         <button id="fullscreenBtn">Fullscreen</button>
+        <button id="infoBtn">Info</button>
         <select id="movieSelect" aria-label="Select a movie">
             <option value="" disabled selected>Select a movie</option>
             <!-- Horror Movies -->
@@ -282,6 +311,16 @@
             <button id="backBtn">Back</button>
             <iframe src="https://mathstudy.dev/gba/" allowfullscreen></iframe>
         </div>
+
+        <!-- Info list -->
+        <div id="infoList">
+            <ul>
+                <li><strong>Select a Movie:</strong> Click the 'Select a Movie' button to choose a movie from the list.</li>
+                <li><strong>Play Game:</strong> Click the 'Play Game' button to start a game (not implemented yet).</li>
+                <li><strong>Fullscreen:</strong> Click the 'Fullscreen' button to expand the viewer to full screen.</li>
+                <li><strong>Contact:</strong> Please message me on Discord with your name so I can identify you!!: <strong>_therealpro_</strong></li>
+            </ul>
+        </div>
     </div>
 
     <script>
@@ -296,6 +335,8 @@
             const gameBtn = document.getElementById('gameBtn');
             const gameSection = document.getElementById('gameSection');
             const backBtn = document.getElementById('backBtn');
+            const infoBtn = document.getElementById('infoBtn');
+            const infoList = document.getElementById('infoList');
 
             // Show modal on button click
             showOptionsBtn.addEventListener('click', () => {
@@ -342,6 +383,11 @@
             backBtn.addEventListener('click', () => {
                 gameSection.style.display = 'none';
                 showOptionsBtn.style.display = 'block';
+            });
+
+            // Toggle info list
+            infoBtn.addEventListener('click', () => {
+                infoList.style.display = infoList.style.display === 'block' ? 'none' : 'block';
             });
 
             // Close modal if clicking outside of it
