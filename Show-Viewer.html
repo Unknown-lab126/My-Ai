@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>_*Show Viewer*_</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .hidden {
+            display: none;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            cursor: pointer;
+            padding: 5px;
+            border: 1px solid #ddd;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        li:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>[̲̅S][̲̅h][̲̅o][̲̅w] [̲̅V][̲̅i][̲̅e][̲̅w][̲̅e][̲̅r]</h1>
+        <label for="show-select">Select a Show:</label>
+        <select id="show-select">
+            <option value="">--Select a Show--</option>
+            <option value="ben_10_classic">Ben 10 (Classic)</option>
+            <option value="ben_10_alien_force">Ben 10: Alien Force</option>
+            <option value="ben_10_ultimate_alien">Ben 10: Ultimate Alien</option>
+            <option value="ben_10_omniverse">Ben 10: Omniverse</option>
+            <option value="aqua_teen">Aqua Teen Hunger Force</option>
+            <option value="Pokemon">Pokemon</option>
+            <option value="we_bare_bears">We bare bears</option>
+            <option value="gravity_falls">Gravity Falls</option>
+        </select>
+
+        <div id="season-container" class="hidden">
+            <label for="season-select">Select a Season:</label>
+            <select id="season-select">
+                <option value="">--Select a Season--</option>
+            </select>
+        </div>
+
+        <div id="episode-list" class="hidden">
+            <h2>Episodes</h2>
+            <ul id="episodes"></ul>
+        </div>
+
+        <div id="episode-details" class="hidden">
+            <h2>Episode Details</h2>
+            <iframe id="video-player" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+            <p id="details"></p>
+        </div>
+    </div>
+
+    <script>
+        const shows = {
+            ben_10_classic: {
+                seasons: {
+                    1: [
+                        { title: "Episode 1: And Then There Were 10", details: "Ben discovers the Omnitrix." },
+                        { title: "Episode 2: Washington B.C.", details: "Ben travels to Washington D.C." },
+                        { title: "Episode 3: The Krakken", details: "Ben faces a villain at the mall." },
+                        { title: "Episode 4: Permanent Retirement", details: "Ben discovers the Omnitrix." },
+                        { title: "Episode 5: Hunted", details: "Ben travels to Washington D.C." },
+                        { title: "Episode 6: Tourist Trap", details: "Ben faces a villain at the mall." },
+                        { title: "Episode 7: Kevin 11", details: "Ben discovers the Omnitrix." },
+                        { title: "Episode 8: The Alliance", details: "Ben travels to Washington D.C." },
+                        { title: "Episode 9: Last Laugh", details: "Ben faces a villain at the mall." },
+                        { title: "Episode 10: Lucky Girl", details: "Ben discovers the Omnitrix." },
+                        { title: "Episode 11: A Small Problem", details: "Ben travels to Washington D.C." },
+                        { title: "Episode 12: Side Effects", details: "Ben faces a villain at the mall." },
+                        { title: "Episode 13: Secrets", details: "Ben discovers the Omnitrix." },
+                    ],
+                    // Add more seasons...
+                }
+            },
+            ben_10_alien_force: {
+                seasons: {
+                    1: [
+                        { title: "Episode 1: Ben 10 Returns", details: "Ben returns after five years." },
+                    ],
+                    2: [
+                        { title: "Episode 1: Ben 10 Returns Again", details: "Ben returns once more." },
+                    ],
+                    // Add more seasons...
+                }
+            },
+            ben_10_ultimate_alien: {
+                seasons: {
+                    1: [
+                        { title: "Episode 1: The Purge", details: "Ben must purge his enemies." },
+                    ],
+                    2: [
+                        { title: "Episode 1: The Ultimate Enemy", details: "Ben faces his ultimate enemy." },
+                    ],
+                    // Add more seasons...
+                }
+            },
+            ben_10_omniverse: {
+                seasons: {
+                    1: [
+                        { title: "Episode 1: A New Beginning", details: "Ben starts a new chapter." },
+                        { title: "Episode 2: A New Beginning", details: "Ben starts a new chapter." },
+                        { title: "Episode 3: A New Beginning", details: "Ben starts a new chapter." },
+                    ],
+                    // Add more seasons...
+                }
+            },
+            aqua_teen: {
+                seasons: {
+                    1: [
+                        { title: "Episode 1: Frat Aliens", details: "This is the first episode of Aqua Teen Hunger Force." },
+                        { title: "Episode 2: Escape from Leprechaun", details: "Details about Episode 2." },
+                        { title: "Episode 3: Super Trivia", details: "Details about Episode 3." },
+                        { title: "Episode 4: The Hunger Force", details: "Details about Episode 4." },
+                        { title: "Episode 5: Frat Aliens", details: "Detailes about Episode 5" },
+                        { title: "Episode 6: Escape from Leprechaun", details: "Details about Episode 6." },
+                        { title: "Episode 7: Super Trivia", details: "Details about Episode 7." },
+                        { title: "Episode 8: The Hunger Force", details: "Details about Episode 8." },
+                        { title: "Episode 9: Frat Aliens", details: "Details about Episode 9." },
+                        { title: "Episode 10: Escape from Leprechaun", details: "Details about Episode 10." },
+                        { title: "Episode 11: Super Trivia", details: "Details about Episode 11." },
+                        { title: "Episode 12: The Hunger Force", details: "Details about Episode 12." },
+                        { title: "Episode 13: Frat Aliens", details: "Detailes about Episode 13" },
+                        { title: "Episode 14: Escape from Leprechaun", details: "Details about Episode 14." },
+                        { title: "Episode 15: Super Trivia", details: "Details about Episode 15." },
+                        { title: "Episode 16: The Hunger Force", details: "Details about Episode 16." },
+                    ],
+                    2: [
+                        { title: "Episode 1: Frat Aliens", details: "This is the first episode of Aqua Teen Hunger Force." },
+                        { title: "Episode 2: Escape from Leprechaun", details: "Details about Episode 2." },
+                        { title: "Episode 3: Super Trivia", details: "Details about Episode 3." },
+                        { title: "Episode 4: The Hunger Force", details: "Details about Episode 4." },
+                        { title: "Episode 5: Frat Aliens", details: "Detailes about Episode 5" },
+                        { title: "Episode 6: Escape from Leprechaun", details: "Details about Episode 6." },
+                        { title: "Episode 7: Super Trivia", details: "Details about Episode 7." },
+                        { title: "Episode 8: The Hunger Force", details: "Details about Episode 8." },
+                    ],
+                    3: [
+                      
+                    ],
+                    4: [
+                      
+                    ],
+                    5: [
+                      
+                    ],
+                    6: [
+                      
+                    ],
+                    7: [
+                      
+                    ],
+                    8: [
+                      
+                    ],
+                    9: [
+                      
+                    ],
+                    10: [
+                      
+                    ],
+                    11: [
+                      
+                    ],
+                    12: [
+                      
+                    ],
+                    // Add more seasons...
+                }
+            },
+            Pokemon: {
+                seasons: {
+                    1: [
+                        { title: "Episode 1: Pokémon! I Choose You!", details: "Details about pokemon season 1 Episode 1." },
+                        { title: "Episode 2: Showdown! Pokémon Center!", details: "Details about pokemon season 1 Episode 2." },
+                        { title: "Episode 3: Pokémon, I'll Get You!", details: "Details about pokemon season 1 Episode 3." },
+                        { title: "Episode 4: Challenge of the Young Boy Samurai!", details: "Details about pokemon season 1 Episode 4." },
+                        { title: "Episode 5: Battle of Nibi Gym!", details: "Details about pokemon season 1 Episode 5." },
+                        { title: "Episode 6: Pippi and the Moon Stone", details: "Details about pokemon season 1 Episode 6." },
+                        { title: "Episode 7: The Underwater Flowers of Hanada City", details: "Details about pokemon season 1 Episode 7." },
+                        { title: "Episode 8: The Road to the Pokémon League", details: "Details about pokemon season 1 Episode 8." },
+                        { title: "Episode 9: Pokémon Certain Victory Manual", details: "Details about pokemon season 1 Episode 9." },
+                        { title: "Episode 10: Fushigidane of the Hidden Village", details: "Details about pokemon season 1 Episode 10." },
+                        { title: "Episode 11: The Stray Pokémon – Hitokage", details: "Details about pokemon season 1 Episode 11." },
+                        { title: "Episode 12: Pokemon Episode 12", details: "Details about pokemon season 1 Episode 12." },
+                        { title: "Episode 13: Pokemon Episode 13", details: "Details about pokemon season 1 Episode 13." },
+                        { title: "Episode 14: Pokemon Episode 14", details: "Details about pokemon season 1 Episode 14." },
+                        { title: "Episode 15: Pokemon Episode 15", details: "Details about pokemon season 1 Episode 15." },
+                        { title: "Episode 16: Pokemon Episode 16", details: "Details about pokemon season 1 Episode 16." },
+                        { title: "Episode 17: Pokemon Episode 17", details: "Details about pokemon season 1 Episode 17." },
+                        { title: "Episode 18: Pokemon Episode 18", details: "Details about pokemon season 1 Episode 18." },
+                        { title: "Episode 19: Pokemon Episode 19", details: "Details about pokemon season 1 Episode 19." },
+                        { title: "Episode 20: Pokemon Episode 20", details: "Details about pokemon season 1 Episode 20." },
+                        { title: "Episode 21: Pokemon Episode 21", details: "Details about pokemon season 1 Episode 21." },
+                        { title: "Episode 22: Pokemon Episode 22", details: "Details about pokemon season 1 Episode 22." },
+                        { title: "Episode 23: Pokemon Episode 23", details: "Details about pokemon season 1 Episode 23." },
+                        { title: "Episode 24: Pokemon Episode 24", details: "Details about pokemon season 1 Episode 24." },
+                        { title: "Episode 25: Pokemon Episode 25", details: "Details about pokemon season 1 Episode 25." },
+                        { title: "Episode 26: Pokemon Episode 26", details: "Details about pokemon season 1 Episode 26." },
+                        { title: "Episode 27: Pokemon Episode 27", details: "Details about pokemon season 1 Episode 27." },
+                        { title: "Episode 28: Pokemon Episode 28", details: "Details about pokemon season 1 Episode 28." },
+                        { title: "Episode 29: Pokemon Episode 29", details: "Details about pokemon season 1 Episode 29." },
+                        { title: "Episode 30: Pokemon Episode 30", details: "Details about pokemon season 1 Episode 30." },
+                        { title: "Episode 31: Pokemon Episode 31", details: "Details about pokemon season 1 Episode 31." },
+                        { title: "Episode 32: Pokemon Episode 32", details: "Details about pokemon season 1 Episode 32." },
+                        { title: "Episode 33: Pokemon Episode 33", details: "Details about pokemon season 1 Episode 33." },
+                        { title: "Episode 34: Pokemon Episode 34", details: "Details about pokemon season 1 Episode 34." },
+                        { title: "Episode 35: Pokemon Episode 35", details: "Details about pokemon season 1 Episode 35." },
+                        { title: "Episode 36: Pokemon Episode 36", details: "Details about pokemon season 1 Episode 36." },
+                        { title: "Episode 37: Pokemon Episode 37", details: "Details about pokemon season 1 Episode 37." },
+                        { title: "Episode 38: Pokemon Episode 38", details: "Details about pokemon season 1 Episode 38." },
+                        { title: "Episode 39: Pokemon Episode 39", details: "Details about pokemon season 1 Episode 39." },
+                        { title: "Episode 40: Pokemon Episode 40", details: "Details about pokemon season 1 Episode 40." },
+                        { title: "Episode 41: Pokemon Episode 41", details: "Details about pokemon season 1 Episode 41." },
+                        { title: "Episode 42: Pokemon Episode 42", details: "Details about pokemon season 1 Episode 42." },
+                        { title: "Episode 43: Pokemon Episode 43", details: "Details about pokemon season 1 Episode 43." },
+                        { title: "Episode 44: Pokemon Episode 44", details: "Details about pokemon season 1 Episode 44." },
+                        { title: "Episode 45: Pokemon Episode 45", details: "Details about pokemon season 1 Episode 45." },
+                        { title: "Episode 46: Pokemon Episode 46", details: "Details about pokemon season 1 Episode 46." },
+                        { title: "Episode 47: Pokemon Episode 47", details: "Details about pokemon season 1 Episode 47." },
+                        { title: "Episode 48: Pokemon Episode 48", details: "Details about pokemon season 1 Episode 48." },
+                        { title: "Episode 49: Pokemon Episode 49", details: "Details about pokemon season 1 Episode 49." },
+                        { title: "Episode 50: Pokemon Episode 50", details: "Details about pokemon season 1 Episode 50." },
+                        { title: "Episode 51: Pokemon Episode 51", details: "Details about pokemon season 1 Episode 51." },
+                        { title: "Episode 52: Pokemon Episode 52", details: "Details about pokemon season 1 Episode 52." },
+                    ],
+                    2: [
+                      { title: "Episode 1: Show 4 Episode 1", details: "Details about pokemon season 2 Episode 1."},
+                      { title: "Episode 2: Show 4 Episode 2", details: "Details about pokemon season 2 Episode 2."},
+                      { title: "Episode 3: Show 4 Episode 3", details: "Details about pokemon season 2 Episode 3."},
+                      { title: "Episode 4: Show 4 Episode 4", details: "Details about pokemon season 2 Episode 4."},
+                      { title: "Episode 5: Show 4 Episode 5", details: "Details about pokemon season 2 Episode 5."},
+                      { title: "Episode 6: Show 4 Episode 1", details: "Details about pokemon season 2 Episode 6."},
+                      { title: "Episode 7: Show 4 Episode 2", details: "Details about pokemon season 2 Episode 7."},
+                      { title: "Episode 8: Show 4 Episode 3", details: "Details about pokemon season 2 Episode 8."},
+                      { title: "Episode 9: Show 4 Episode 4", details: "Details about pokemon season 2 Episode 9."},
+                      { title: "Episode 10: Show 4 Episode 5", details: "Details about pokemon season 2 Episode 10."},
+                      { title: "Episode 11: Show 4 Episode 1", details: "Details about pokemon season 2 Episode 11."},
+                      { title: "Episode 12: Show 4 Episode 2", details: "Details about pokemon season 2 Episode 12."},
+                      { title: "Episode 13: Show 4 Episode 3", details: "Details about pokemon season 2 Episode 13."},
+                      { title: "Episode 14: Show 4 Episode 4", details: "Details about pokemon season 2 Episode 14."},
+                      { title: "Episode 15: Show 4 Episode 5", details: "Details about pokemon season 2 Episode 15."},
+                    ],
+                    3: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Detials about pokemon season 3 Episode 1"},
+                      { title: "Episode 2: Show 5 Episode 2", details: "Details about pokemon season 3 Episode 2."},
+                      { title: "Episode 3: Show 5 Episode 3", details: "Details about pokemon season 3 Episode 3."},
+                      { title: "Episode 4: Show 5 Episode 4", details: "Details about pokemon season 3 Episode 4."},
+                      { title: "Episode 5: Show 5 Episode 5", details: "Details about pokemon season 3 Episode 5."},
+                    ],
+                    4: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 4 Episode 1."},
+                    ],
+                    5: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 5 Episode 1."},
+                    ],
+                    6: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 6 Episode 1."},
+                    ],
+                    7: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 7 Episode 1."},
+                    ],
+                    8: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 8 Episode 1."},
+                    ],
+                    9: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 9 Episode 1."},
+                    ],
+                    10: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 10 Episode 1."},
+                    ],
+                    11: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 11 Episode 1."},
+                    ],
+                    12: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 12 Episode 1."},
+                    ],
+                    13: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 13 Episode 1."},
+                    ],
+                    14: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 14 Episode 1."},
+                    ],
+                    15: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 15 Episode 1."},
+                    ],
+                    16: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 16 Episode 1."},
+                    ],
+                    17: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 17 Episode 1."},
+                    ],
+                    18: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 18 Episode 1."},
+                    ],
+                    19: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 19 Episode 1."},
+                    ],
+                    20: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 20 Episode 1."},
+                    ],
+                    21: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 21 Episode 1."},
+                    ],
+                    22: [
+                      { title: "Episode 1: Show 5 Episode 1", details: "Details about pokemon season 22 Episode 1."},
+                    ],
+
+                    // Add more seasons...
+                }
+            },
+            we_bare_bears: {
+                seasons: {
+                    1: [
+                      { title: "Episode 1: show 6 Episode 1", details: "Details about we bare bears season 1."},
+                    ],
+                }
+            },
+            gravity_falls: {
+                seasons: {
+                    1: [
+                      { title: "Episode 1: show 7 Episode 1", details: "Details about Gravity Falls season 1."},
+                      { title: "Episode 2: show 7 Episode 1", details: "Details about Gravity Falls season 1."},
+                      { title: "Episode 3: show 7 Episode 1", details: "Details about Gravity Falls season 1."},
+                      { title: "Episode 4: show 7 Episode 1", details: "Details about Gravity Falls season 1."},
+                      { title: "Episode 5: show 7 Episode 1", details: "Details about Gravity Falls season 1."},
+                      { title: "Episode 6: show 7 Episode 1", details: "Details about Gravity Falls season 1."},
+                      { title: "Episode 7: show 7 Episode 1", details: "Details about Gravity Falls season 1."},
+                    ],
+                }
+            },
+        };
+        
+
+        const showSelect = document.getElementById("show-select");
+        const seasonContainer = document.getElementById("season-container");
+        const seasonSelect = document.getElementById("season-select");
+        const episodeList = document.getElementById("episode-list");
+        const episodesContainer = document.getElementById("episodes");
+        const episodeDetails = document.getElementById("episode-details");
+        const videoPlayer = document.getElementById("video-player");
+        const detailsParagraph = document.getElementById("details");
+
+        showSelect.addEventListener("change", (event) => {
+            const selectedShow = event.target.value;
+            seasonSelect.innerHTML = '<option value="">--Select a Season--</option>'; // Reset season dropdown
+            episodesContainer.innerHTML = ""; // Clear previous episodes
+            detailsParagraph.textContent = ""; // Clear details
+            videoPlayer.src = ""; // Reset video source
+            episodeDetails.classList.add("hidden"); // Hide details
+            episodeList.classList.add("hidden"); // Hide episode list
+            seasonContainer.classList.add("hidden"); // Hide season dropdown
+
+            if (selectedShow) {
+                const seasons = Object.keys(shows[selectedShow].seasons);
+                seasons.forEach(season => {
+                    const option = document.createElement("option");
+                    option.value = season;
+                    option.textContent = `Season ${season}`;
+                    seasonSelect.appendChild(option);
+                });
+                seasonContainer.classList.remove("hidden"); // Show the season dropdown
+            }
+        });
+
+        seasonSelect.addEventListener("change", (event) => {
+            const selectedShow = showSelect.value;
+            const selectedSeason = event.target.value;
+            episodesContainer.innerHTML = ""; // Clear previous episodes
+            detailsParagraph.textContent = ""; // Clear details
+            videoPlayer.src = ""; // Reset video source
+            episodeDetails.classList.add("hidden"); // Hide details
+
+            if (selectedSeason) {
+                const episodes = shows[selectedShow].seasons[selectedSeason];
+                episodes.forEach((episode, index) => {
+                    const li = document.createElement("li");
+                    li.textContent = episode.title;
+                    li.addEventListener("click", () => {
+                        let imdbId;
+                        if (selectedShow === "aqua_teen") {
+                            imdbId = "tt0297494"; // IMDb ID for Aqua Teen Hunger Force
+                        } else if (selectedShow.startsWith("ben_10_classic")) {
+                            imdbId = "tt0760437"; // IMDb ID for Ben 10 (general)
+                        } else if (selectedShow === "ben_10_alien_force") {
+                            imdbId = "tt1192169"; // IMDb ID for Show 2
+                        } else if (selectedShow === "ben_10_ultimate_alien") {
+                            imdbId = "tt1622696"; // IMDb ID for Show 3
+                        } else if (selectedShow === "ben_10_omniverse") {
+                            imdbId = "tt2293002"; // IMDb ID for Show 4
+                        } else if (selectedShow === "Pokemon") {
+                            imdbId = "tt0168366"; // IMDb ID for Show 5
+                        } else if (selectedShow === "we_bare_bears") {
+                            imdbId = "tt4839610"; // IMDb ID for Show 6
+                        } else if (selectedShow === "gravity_falls") {
+                            imdbId = "tt1865718"; // IMDb ID for Show 7
+                        } else if (selectedShow === "gravity_falls") {
+                            imdbId = "tt1865718"; // IMDb ID for Show 7
+                        }
+
+                        videoPlayer.src = `https://vidsrc.xyz/embed/tv?imdb=${imdbId}&season=${seasonSelect.value}&episode=${index + 1}`;
+                        detailsParagraph.textContent = episode.details;
+                        episodeDetails.classList.remove("hidden");
+                    });
+                    episodesContainer.appendChild(li);
+                });
+                episodeList.classList.remove("hidden"); // Show the episode list
+            } else {
+                episodeList.classList.add("hidden"); // Hide the episode list if no season is selected
+            }
+        });
+    </script>
+</body>
+</html>
