@@ -55,6 +55,8 @@
             <option value="Pokemon">Pokemon</option>
             <option value="we_bare_bears">We bare bears</option>
             <option value="gravity_falls">Gravity Falls</option>
+            <option value="star_the_forces_of_evil">Star the Forces of evil</option>
+            <option value="regular_show">Regular Show</option>
         </select>
 
         <div id="season-container" class="hidden">
@@ -2063,6 +2065,45 @@
                     ],
                 }
             },
+            star_the_forces_of_evil: {
+                seasons: {
+                    1: [
+                        { title: "Episode 1: Star The Forces Of Evil", details: "Star The Forces Of Evil Season 1."},
+                        { title: "Episode 2: Star The Forces Of Evil", details: "Star The Forces Of Evil Season 1."},
+                        { title: "Episode 3: Star The Forces Of Evil", details: "Star The Forces Of Evil Season 1."},
+                        { title: "Episode 4: Star The Forces Of Evil", details: "Star The Forces Of Evil Season 1."},
+                        { title: "Episode 5: Star The Forces Of Evil", details: "Star The Forces Of Evil Season 1."},
+                        { title: "Episode 7: Star The Forces Of Evil", details: "Star The Forces Of Evil Season 1."},
+                        { title: "Episode 8: Star The Forces Of Evil", details: "Star The Forces Of Evil Season 1."},
+                        { title: "Episode 9: Star The Forces Of Evil", details: "Star The Forces Of Evil Season 1."},
+                        { title: "Episode 10: Star The Forces Of Evil", details: "Star The Forces Of Evil Season 1."},
+                        { title: "Episode 11: Star The Forces Of Evil", details: "Star The Forces Of Evil Season 1."},
+                        { title: "Episode 12: Star The Forces Of Evil", details: "Star The Forces Of Evil Season 1."},
+                        { title: "Episode 13: Star The Forces Of Evil", details: "Star The Forces Of Evil Season 1."},
+                        { title: "Episode 14: Star The Forces Of Evil", details: "Star The Forces Of Evil Season 1."},
+                    ],
+                    // Add more seasons...
+                }
+            },
+            regular_show: {
+              seasons: {
+                  1: [
+                    { title: "Episode 1: Regular Show", details: "Regular Show Season 1."},
+                    { title: "Episode 2: Regular Show", details: "Regular Show Season 1."},
+                    { title: "Episode 3: Regular Show", details: "Regular Show Season 1."},
+                    { title: "Episode 4: Regular Show", details: "Regular Show Season 1."},
+                    { title: "Episode 5: Regular Show", details: "Regular Show Season 1."},
+                    { title: "Episode 6: Regular Show", details: "Regular Show Season 1."},
+                    { title: "Episode 7: Regular Show", details: "Regular Show Season 1."},
+                    { title: "Episode 8: Regular Show", details: "Regular Show Season 1."},
+                    { title: "Episode 9: Regular Show", details: "Regular Show Season 1."},
+                    { title: "Episode 10: Regular Show", details: "Regular Show Season 1."},
+                    { title: "Episode 11: Regular Show", details: "Regular Show Season 1."},
+                    { title: "Episode 12: Regular Show", details: "Regular Show Season 1."},
+                    { title: "Episode 12: Regular Show", details: "Regular Show Season 1."},
+                  ],
+              }
+           }
         };
         
 
@@ -2128,8 +2169,10 @@
                             imdbId = "tt4839610"; // IMDb ID for Show 6
                         } else if (selectedShow === "gravity_falls") {
                             imdbId = "tt1865718"; // IMDb ID for Show 7
-                        } else if (selectedShow === "gravity_falls") {
-                            imdbId = "tt1865718"; // IMDb ID for Show 7
+                        } else if (selectedShow === "star_the_forces_of_evil") {
+                            imdbId = "tt2758770"; // IMDb ID for Show 8
+                        } else if (selectedShow === "regular_show") {
+                            imdbId = "tt1710308"; // IMDb ID for Show 9
                         }
 
                         videoPlayer.src = `https://vidsrc.xyz/embed/tv?imdb=${imdbId}&season=${seasonSelect.value}&episode=${index + 1}`;
