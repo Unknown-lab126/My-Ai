@@ -5,376 +5,210 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Viewer</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f5f5f5;
-            margin: 0;
-            overflow: hidden;
-        }
-        .container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 1200px;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease-in-out;
-        }
-        .container:hover {
-            transform: scale(1.02);
-        }
-        select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
-        select.show {
-            display: block;
-            opacity: 1;
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            border-radius: 8px;
-            transition: opacity 0.3s ease-in-out;
-        }
-        #showOptionsBtn,
-        #gameBtn,
-        #infoBtn {
-            padding: 10px;
-            background-color: #007bff;
-            border: none;
-            color: #fff;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-bottom: 10px;
-            transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
-        }
-        #showOptionsBtn:hover,
-        #gameBtn:hover,
-        #infoBtn:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
-        }
-        #passcodeModal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        #passcodeModalContent {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            width: 300px;
-        }
-        #passcodeModalContent input {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        #passcodeModalContent button {
-            padding: 10px;
-            background-color: #007bff;
-            border: none;
-            color: #fff;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease-in-out;
-        }
-        #passcodeModalContent button:hover {
-            background-color: #0056b3;
-        }
-        #gameSection {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            z-index: 900;
-            padding: 10px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        #gameSection iframe {
-            width: 100%;
-            height: calc(100% - 50px);
-            border-radius: 8px;
-        }
-        #backBtn {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: #007bff;
-            border: none;
-            color: #fff;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            padding: 8px 12px;
-            transition: background-color 0.3s ease-in-out;
-            z-index: 1001;
-        }
-        #backBtn:hover {
-            background-color: #0056b3;
-        }
-        #infoList {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            background: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            font-size: 14px;
-            max-width: 300px;
-        }
-        #infoList ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        #infoList li {
-            margin-bottom: 10px;
-        }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #121212; color: #ffffff; }
+        h1 { text-align: center; }
+        .menu { text-align: center; margin-top: 50px; }
+        .hidden { display: none; }
+        select { width: 100%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
+        iframe { width: 100%; height: 500px; border: none; }
+        .popup { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); color: white; padding: 20px; z-index: 10; }
+        .popup-content { background: #333; padding: 20px; border-radius: 10px; text-align: center; }
+        .close-popup { cursor: pointer; color: red; }
+        .input-group { margin-top: 20px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <button id="showOptionsBtn">Select a Movie</button>
-        <button id="gameBtn">Play Game</button>
-        <button id="infoBtn">Information</button>
-        <select id="movieSelect" aria-label="Select a movie">
-            <option value="" disabled selected>Select a movie</option>
-            <!-- Horror Movies -->
-            <optgroup label="Horror">
-                <option value="tt4589218">Five Nights at Freddy's (2023)</option>
-                <option value="tt0327597">Coraline (2009)</option>
-                <option value="tt1396484">It (2017)</option>
-                <option value="tt7349950">It Chapter Two (2019)</option>
-                <option value="tt0298130">The Ring (2002)</option>
-                <option value="tt1457767">The Conjuring (2013)</option>
-                <option value="tt0251736">House of 1000 Corpses (2003)</option>
-                <option value="tt0289043">28 Days Later (2002)</option>
-                <option value="tt0081505">The Shining (1980)</option>
-                <option value="tt1259521">The Cabin in the Woods (2012)</option>
-                <option value="tt0121164">Corpse Bride (2005)</option>
-            </optgroup>
-            <!-- Drama Movies -->
-            <optgroup label="Drama">
-                <option value="tt0111161">The Shawshank Redemption (1994)</option>
-                <option value="tt0109830">Forrest Gump (1994)</option>
-                <option value="tt0110912">Pulp Fiction (1994)</option>
-                <option value="tt0450825">The Pursuit of Happyness (2006)</option>
-                <option value="tt0268978">A Beautiful Mind (2001)</option>
-                <option value="tt0137523">Fight Club (1999)</option>
-                <option value="tt0758758">Into the Wild (2007)</option>
-                <option value="tt0419887">The Kite Runner (2007)</option>
-                <option value="tt0359950">The Secret Life of Walter Mitty (2013)</option>
-            </optgroup>
-            <!-- Crime Movies -->
-            <optgroup label="Crime">
-                <option value="tt0068646">The Godfather (1972)</option>
-                <option value="tt0071562">The Godfather Part II (1974)</option>
-                <option value="tt0099685">Goodfellas (1990)</option>
-                <option value="tt0443706">Zodiac (2007)</option>
-                <option value="tt0114814">The Usual Suspects (1995)</option>
-                <option value="tt0094226">The Untouchables (1987)</option>
-                <option value="tt0071315">Chinatown (1974)</option>
-            </optgroup>
-            <!-- Sci-Fi Movies -->
-            <optgroup label="Sci-Fi">
-                <option value="tt0468569">The Dark Knight (2008)</option>
-                <option value="tt0816692">Interstellar (2014)</option>
-                <option value="tt1375666">Inception (2010)</option>
-                <option value="tt0133093">The Matrix (1999)</option>
-                <option value="tt0848228">The Avengers (2012)</option>
-                <option value="tt0110413">Starship Troopers (1997)</option>
-                <option value="tt0181689">The Fifth Element (1997)</option>
-            </optgroup>
-            <!-- Fantasy Movies -->
-            <optgroup label="Fantasy">
-                <option value="tt0120737">The Lord of the Rings: The Fellowship of the Ring (2001)</option>
-                <option value="tt0167261">The Lord of the Rings: The Two Towers (2002)</option>
-                <option value="tt0167260">The Lord of the Rings: The Return of the King (2003)</option>
-                <option value="tt0114709">Toy Story (1995)</option>
-                <option value="tt0372784">Batman Begins (2005)</option>
-                <option value="tt0121766">Mulan (1998)</option>
-                <option value="tt0120915">Hercules (1997)</option>
-                <option value="tt0363771">The Chronicles of Narnia: The Lion, the Witch and the Wardrobe (2005)</option>
-                <option value="tt1289401">GhostBusters (2016)</option>
-            </optgroup>
-            <!-- Action Movies -->
-            <optgroup label="Action">
-                <option value="tt0234215">The Matrix Reloaded (2003)</option>
-                <option value="tt1392190">Mad Max: Fury Road (2015)</option>
-                <option value="tt0095016">Die Hard (1988)</option>
-                <option value="tt0103064">Terminator 2: Judgment Day (1991)</option>
-                <option value="tt3829266">The Predator (2018)</option>
-                <option value="tt0100403">Predator 2 (1990)</option>
-                <option value="tt1424381">Predators (2010)</option>
-                <option value="tt0103644">Aliens (1986)</option>
-                <option value="tt0258463">The Bourne Identity (2002)</option>
-                <option value="tt0456146">Casino Royale (2006)</option>
-                <option value="tt0120812">Rush Hour (1998)</option>
-            </optgroup>
-            <!-- Animated Movies -->
-            <optgroup label="Animated">
-                <option value="tt0114709">Toy Story (1995)</option>
-                <option value="tt4633694">Spider-Man: Into the Spider-Verse (2018)</option>
-                <option value="tt0110357">The Lion King (1994)</option>
-                <option value="tt6105098">The Lion King (2019)</option>
-                <option value="tt2294629">Frozen (2013)</option>
-                <option value="tt1049413">Up (2009)</option>
-                <option value="tt0266543">Finding Nemo (2003)</option>
-                <option value="tt0317705">The Incredibles (2004)</option>
-                <option value="tt0103639">Aladdin (1992)</option>
-                <option value="tt3521164">Moana (2016)</option>
-                <option value="tt2953050">Encanto (2021)</option>
-                <option value="tt0120762">Mulan (1998)</option>
-                <option value="tt0119282">Hercules (1997)</option>
-                <option value="tt0398286">Tangled (2010)</option>
-                <option value="tt0910970">Wall - E (2008)</option>
-            </optgroup>
-        </select>
-        <iframe id="movieFrame" src="" allowfullscreen></iframe>
+    <h1>Movie Viewer</h1>
+    
+    <div class="menu">
+        <button id="accessButton">Access Movies</button>
     </div>
 
-    <!-- Passcode Modal -->
-    <div id="passcodeModal">
-        <div id="passcodeModalContent">
+    <div class="popup" id="passcodePopup">
+        <div class="popup-content">
+            <span class="close-popup" id="closePasscodePopup">&times;</span>
             <h2>Enter Passcode</h2>
-            <input type="text" id="passcodeInput" placeholder="Passcode">
-            <button id="passcodeSubmitBtn">Submit</button>
+            <div class="input-group">
+                <input type="password" id="passcodeInput" placeholder="Enter passcode" />
+                <button id="submitPasscode">Submit</button>
+            </div>
+            <p id="passcodeMessage" style="color: red; display: none;"></p>
         </div>
     </div>
 
-    <!-- Game Section -->
-    <div id="gameSection">
-        <button id="backBtn">Back to Movies</button>
-        <iframe id="gameFrame" src="https://your-game-url.com" allowfullscreen></iframe>
-    </div>
+    <div class="hidden" id="movieSection">
+        <select id="movieSelect">
+            <option value="" disabled selected>Select a movie</option>
+            <!-- Horror Movies -->
+            <optgroup label="Horror">
+                <option value="tt4589218" data-info="Five Nights at Freddy's (2023)">Five Nights at Freddy's (2023)</option>
+                <option value="tt0327597" data-info="Coraline (2009)">Coraline (2009)</option>
+                <option value="tt1396484" data-info="It (2017)">It (2017)</option>
+                <option value="tt7349950" data-info="It Chapter Two (2019)">It Chapter Two (2019)</option>
+                <option value="tt0298130" data-info="The Ring (2002)">The Ring (2002)</option>
+                <option value="tt1457767" data-info="The Conjuring (2013)">The Conjuring (2013)</option>
+                <option value="tt0251736" data-info="House of 1000 Corpses (2003)">House of 1000 Corpses (2003)</option>
+                <option value="tt0289043" data-info="28 Days Later (2002)">28 Days Later (2002)</option>
+                <option value="tt0081505" data-info="The Shining (1980)">The Shining (1980)</option>
+                <option value="tt1259521" data-info="The Cabin in the Woods (2012)">The Cabin in the Woods (2012)</option>
+                <option value="tt0121164" data-info="Corpse Bride (2005)">Corpse Bride (2005)</option>
+            </optgroup>
+            <!-- Drama Movies -->
+            <optgroup label="Drama">
+                <option value="tt0111161" data-info="The Shawshank Redemption (1994)">The Shawshank Redemption (1994)</option>
+                <option value="tt0109830" data-info="Forrest Gump (1994)">Forrest Gump (1994)</option>
+                <option value="tt0110912" data-info="Pulp Fiction (1994)">Pulp Fiction (1994)</option>
+                <option value="tt0450825" data-info="The Pursuit of Happyness (2006)">The Pursuit of Happyness (2006)</option>
+                <option value="tt0268978" data-info="A Beautiful Mind (2001)">A Beautiful Mind (2001)</option>
+                <option value="tt0137523" data-info="Fight Club (1999)">Fight Club (1999)</option>
+                <option value="tt0758758" data-info="Into the Wild (2007)">Into the Wild (2007)</option>
+                <option value="tt0419887" data-info="The Kite Runner (2007)">The Kite Runner (2007)</option>
+                <option value="tt0359950" data-info="The Secret Life of Walter Mitty (2013)">The Secret Life of Walter Mitty (2013)</option>
+            </optgroup>
+            <!-- Crime Movies -->
+            <optgroup label="Crime">
+                <option value="tt0068646" data-info="The Godfather (1972)">The Godfather (1972)</option>
+                <option value="tt0071562" data-info="The Godfather Part II (1974)">The Godfather Part II (1974)</option>
+                <option value="tt0099685" data-info="Goodfellas (1990)">Goodfellas (1990)</option>
+                <option value="tt0443706" data-info="Zodiac (2007)">Zodiac (2007)</option>
+                <option value="tt0114814" data-info="The Usual Suspects (1995)">The Usual Suspects (1995)</option>
+                <option value="tt0094226" data-info="The Untouchables (1987)">The Untouchables (1987)</option>
+                <option value="tt0071315" data-info="Chinatown (1974)">Chinatown (1974)</option>
+            </optgroup>
+            <!-- Sci-Fi Movies -->
+            <optgroup label="Sci-Fi">
+                <option value="tt0468569" data-info="The Dark Knight (2008)">The Dark Knight (2008)</option>
+                <option value="tt0816692" data-info="Interstellar (2014)">Interstellar (2014)</option>
+                <option value="tt1375666" data-info="Inception (2010)">Inception (2010)</option>
+                <option value="tt0133093" data-info="The Matrix (1999)">The Matrix (1999)</option>
+                <option value="tt0848228" data-info="The Avengers (2012)">The Avengers (2012)</option>
+                <option value="tt0110413" data-info="Starship Troopers (1997)">Starship Troopers (1997)</option>
+                <option value="tt0181689" data-info="The Fifth Element (1997)">The Fifth Element (1997)</option>
+            </optgroup>
+            <!-- Fantasy Movies -->
+            <optgroup label="Fantasy">
+                <option value="tt0120737" data-info="The Lord of the Rings: The Fellowship of the Ring (2001)">The Lord of the Rings: The Fellowship of the Ring (2001)</option>
+                <option value="tt0167261" data-info="The Lord of the Rings: The Two Towers (2002)">The Lord of the Rings: The Two Towers (2002)</option>
+                <option value="tt0167260" data-info="The Lord of the Rings: The Return of the King (2003)">The Lord of the Rings: The Return of the King (2003)</option>
+                <option value="tt0114709" data-info="Toy Story (1995)">Toy Story (1995)</option>
+                <option value="tt0372784" data-info="Batman Begins (2005)">Batman Begins (2005)</option>
+                <option value="tt0121766" data-info="Mulan (1998)">Mulan (1998)</option>
+                <option value="tt0120915" data-info="Hercules (1997)">Hercules (1997)</option>
+                <option value="tt0363771" data-info="The Chronicles of Narnia: The Lion, the Witch and the Wardrobe (2005)">The Chronicles of Narnia: The Lion, the Witch and the Wardrobe (2005)</option>
+                <option value="tt1289401" data-info="GhostBusters (2016)">GhostBusters (2016)</option>
+            </optgroup>
+            <!-- Action Movies -->
+            <optgroup label="Action">
+                <option value="tt0234215" data-info="The Matrix Reloaded (2003)">The Matrix Reloaded (2003)</option>
+                <option value="tt1392190" data-info="Mad Max: Fury Road (2015)">Mad Max: Fury Road (2015)</option>
+                <option value="tt0095016" data-info="Die Hard (1988)">Die Hard (1988)</option>
+                <option value="tt0103064" data-info="Terminator 2: Judgment Day (1991)">Terminator 2: Judgment Day (1991)</option>
+                <option value="tt3829266" data-info="The Predator (2018)">The Predator (2018)</option>
+                <option value="tt0100403" data-info="Predator 2 (1990)">Predator 2 (1990)</option>
+                <option value="tt1424381" data-info="Predators (2010)">Predators (2010)</option>
+                <option value="tt0103644" data-info="Aliens (1986)">Aliens (1986)</option>
+                <option value="tt0258463" data-info="The Bourne Identity (2002)">The Bourne Identity (2002)</option>
+                <option value="tt0456146" data-info="Casino Royale (2006)">Casino Royale (2006)</option>
+                <option value="tt0120812" data-info="Rush Hour (1998)">Rush Hour (1998)</option>
+            </optgroup>
+            <!-- Animated Movies -->
+            <optgroup label="Animated">
+                <option value="tt0114709" data-info="Toy Story (1995)">Toy Story (1995)</option>
+                <option value="tt4633694" data-info="Spider-Man: Into the Spider-Verse (2018)">Spider-Man: Into the Spider-Verse (2018)</option>
+                <option value="tt0110357" data-info="The Lion King (1994)">The Lion King (1994)</option>
+                <option value="tt6105098" data-info="The Lion King (2019)">The Lion King (2019)</option>
+                <option value="tt2294629" data-info="Frozen (2013)">Frozen (2013)</option>
+                <option value="tt1049413" data-info="Up (2009)">Up (2009)</option>
+                <option value="tt0266543" data-info="Finding Nemo (2003)">Finding Nemo (2003)</option>
+                <option value="tt0317705" data-info="The Incredibles (2004)">The Incredibles (2004)</option>
+                <option value="tt0103639" data-info="Aladdin (1992)">Aladdin (1992)</option>
+                <option value="tt3521164" data-info="Moana (2016)">Moana (2016)</option>
+                <option value="tt2953050" data-info="Encanto (2021)">Encanto (2021)</option>
+                <option value="tt0120762" data-info="Mulan (1998)">Mulan (1998)</option>
+                <option value="tt0119282" data-info="Hercules (1997)">Hercules (1997)</option>
+                <option value="tt0398286" data-info="Tangled (2010)">Tangled (2010)</option>
+                <option value="tt0910970" data-info="Wall - E (2008)">Wall - E (2008)</option>
+            </optgroup>
+        </select>
+        <iframe id="movieFrame" src="" allowfullscreen></iframe>
 
-    <!-- Information List -->
-    <div id="infoList">
-        <ul>
-            <li>Information about selected movies will appear here.</li>
-        </ul>
+        <div class="popup" id="movieInfoPopup">
+            <div class="popup-content">
+                <span class="close-popup" id="closePopup">&times;</span>
+                <h2 id="movieTitle"></h2>
+                <p id="movieDescription"></p>
+            </div>
+        </div>
     </div>
 
     <script>
+        const accessButton = document.getElementById('accessButton');
+        const movieSection = document.getElementById('movieSection');
         const movieSelect = document.getElementById('movieSelect');
         const movieFrame = document.getElementById('movieFrame');
-        const showOptionsBtn = document.getElementById('showOptionsBtn');
-        const passcodeModal = document.getElementById('passcodeModal');
+        const movieInfoPopup = document.getElementById('movieInfoPopup');
+        const movieTitle = document.getElementById('movieTitle');
+        const movieDescription = document.getElementById('movieDescription');
+        const closePopup = document.getElementById('closePopup');
+        const passcodePopup = document.getElementById('passcodePopup');
+        const closePasscodePopup = document.getElementById('closePasscodePopup');
         const passcodeInput = document.getElementById('passcodeInput');
-        const passcodeSubmitBtn = document.getElementById('passcodeSubmitBtn');
-        const gameSection = document.getElementById('gameSection');
-        const gameBtn = document.getElementById('gameBtn');
-        const backBtn = document.getElementById('backBtn');
-        const infoList = document.getElementById('infoList');
-        const infoBtn = document.getElementById('infoBtn');
+        const submitPasscode = document.getElementById('submitPasscode');
+        const passcodeMessage = document.getElementById('passcodeMessage');
 
-        // Show the movie select options
-        showOptionsBtn.addEventListener('click', () => {
-            movieSelect.classList.toggle('show');
+        accessButton.addEventListener('click', () => {
+            passcodePopup.style.display = 'block';
         });
 
-        // Movie selection event
+        closePasscodePopup.addEventListener('click', () => {
+            passcodePopup.style.display = 'none';
+        });
+
+        submitPasscode.addEventListener('click', () => {
+            validatePasscode();
+        });
+
+        passcodeInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                validatePasscode();
+            }
+        });
+
+        function validatePasscode() {
+            const passcode = passcodeInput.value;
+            if (passcode === "movie_lol") {
+                movieSection.classList.remove('hidden');
+                passcodePopup.style.display = 'none';
+                passcodeMessage.style.display = 'none';
+            } else {
+                passcodeMessage.textContent = "Incorrect passcode.";
+                passcodeMessage.style.display = 'block';
+            }
+            passcodeInput.value = ""; // Clear the input
+        }
+
         movieSelect.addEventListener('change', (event) => {
-            const selectedValue = event.target.value;
+            const selectedOption = event.target.selectedOptions[0];
+            const selectedValue = selectedOption.value;
+            const info = selectedOption.dataset.info;
+
             if (selectedValue) {
-                movieFrame.src = `https://www.2embed.ru/embed/${selectedValue}`;
-                toggleFullscreen();
+                movieFrame.src = `https://vidsrc.xyz/embed/${selectedValue}`;
+                movieTitle.textContent = selectedOption.textContent;
+                movieDescription.textContent = info;
+                movieInfoPopup.style.display = 'block';
             }
         });
 
-        // Passcode submission event
-        passcodeSubmitBtn.addEventListener('click', () => {
-            const enteredPasscode = passcodeInput.value;
-            if (enteredPasscode === 'yourPasscode') {
-                passcodeModal.style.display = 'none';
-                movieSelect.classList.remove('show');
-            } else {
-                alert('Incorrect passcode!');
+        closePopup.addEventListener('click', () => {
+            movieInfoPopup.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === movieInfoPopup) {
+                movieInfoPopup.style.display = 'none';
             }
         });
-
-        // Show game section
-        gameBtn.addEventListener('click', () => {
-            gameSection.style.display = 'flex';
-            movieFrame.style.display = 'none';
-            toggleFullscreen();
-        });
-
-        // Back to movies from game section
-        backBtn.addEventListener('click', () => {
-            gameSection.style.display = 'none';
-            movieFrame.style.display = 'block';
-            toggleFullscreen();
-        });
-
-        // Show information
-        infoBtn.addEventListener('click', () => {
-            infoList.style.display = infoList.style.display === 'none' ? 'block' : 'none';
-        });
-
-        // Toggle fullscreen
-        function toggleFullscreen() {
-            if (document.fullscreenElement) {
-                document.exitFullscreen();
-            } else {
-                document.documentElement.requestFullscreen().then(() => {
-                    adjustIframeSize();
-                });
-            }
-        }
-
-        // Adjust iframe size when entering or exiting fullscreen
-        function adjustIframeSize() {
-            const iframe = document.getElementById('movieFrame');
-            if (document.fullscreenElement) {
-                iframe.style.width = "100vw";
-                iframe.style.height = "100vh";
-            } else {
-                iframe.style.width = "100%";
-                iframe.style.height = "100%";
-            }
-        }
-
-        // Event listeners for adjusting iframe size
-        document.addEventListener('fullscreenchange', adjustIframeSize);
     </script>
 </body>
 </html>
