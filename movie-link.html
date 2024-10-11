@@ -70,27 +70,6 @@
             background-color: #0056b3;
             transform: scale(1.05);
         }
-        #showOptionsBtn:focus,
-        #gameBtn:focus,
-        #infoBtn:focus {
-            outline: none;
-        }
-        #fullscreenBtn {
-            position: absolute;
-            top: 10px;
-            right: 50px; /* Moved slightly to the left */
-            background-color: #007bff;
-            border: none;
-            color: #fff;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            padding: 8px 12px;
-            transition: background-color 0.3s ease-in-out;
-        }
-        #fullscreenBtn:hover {
-            background-color: #0056b3;
-        }
         #passcodeModal {
             display: none;
             position: fixed;
@@ -131,7 +110,6 @@
         #passcodeModalContent button:hover {
             background-color: #0056b3;
         }
-        /* Game section styles */
         #gameSection {
             display: none;
             position: absolute;
@@ -151,7 +129,7 @@
         }
         #gameSection iframe {
             width: 100%;
-            height: calc(100% - 50px); /* Adjust to leave space for the back button */
+            height: calc(100% - 50px);
             border-radius: 8px;
         }
         #backBtn {
@@ -166,7 +144,7 @@
             font-size: 16px;
             padding: 8px 12px;
             transition: background-color 0.3s ease-in-out;
-            z-index: 1001; /* Ensure it is above other elements */
+            z-index: 1001;
         }
         #backBtn:hover {
             background-color: #0056b3;
@@ -197,7 +175,6 @@
         <button id="showOptionsBtn">Select a Movie</button>
         <button id="gameBtn">Play Game</button>
         <button id="infoBtn">Information</button>
-        <button id="fullscreenBtn">Fullscreen</button>
         <select id="movieSelect" aria-label="Select a movie">
             <option value="" disabled selected>Select a movie</option>
             <!-- Horror Movies -->
@@ -291,130 +268,113 @@
                 <option value="tt0910970">Wall - E (2008)</option>
             </optgroup>
         </select>
-        <iframe id="movieFrame" src="" allowfullscreen aria-label="Movie Player"></iframe>
+        <iframe id="movieFrame" src="" allowfullscreen></iframe>
+    </div>
 
-        <!-- Modal for passcode input -->
-        <div id="passcodeModal">
-            <div id="passcodeModalContent">
-                <h2>Enter Passcode</h2>
-                <input type="password" id="passcodeInput" placeholder="Enter passcode" aria-label="Passcode Input">
-                <button id="passcodeSubmitBtn">Submit</button>
-            </div>
-        </div>
-
-        <!-- Game section -->
-        <div id="gameSection">
-            <button id="backBtn">Back</button>
-            <iframe src="https://mathstudy.dev/gba/" allowfullscreen></iframe>
-        </div>
-
-        <!-- Information section -->
-        <div id="infoList">
-            <ul>
-                <li><strong>Select a Movie:</strong> Click the 'Select a Movie' button to choose a movie from the list.</li>
-                <li><strong>Play Game:</strong> Click the 'Play Game' button to start a game (not implemented yet).</li>
-                <li><strong>Fullscreen:</strong> Click the 'Fullscreen' button to expand the viewer to full screen.</li>
-                <li><strong>Contact:</strong> Please message me on Discord with your name so I can identify you!!: <strong>_therealpro_</strong></li>
-            </ul>
+    <!-- Passcode Modal -->
+    <div id="passcodeModal">
+        <div id="passcodeModalContent">
+            <h2>Enter Passcode</h2>
+            <input type="text" id="passcodeInput" placeholder="Passcode">
+            <button id="passcodeSubmitBtn">Submit</button>
         </div>
     </div>
 
+    <!-- Game Section -->
+    <div id="gameSection">
+        <button id="backBtn">Back to Movies</button>
+        <iframe id="gameFrame" src="https://your-game-url.com" allowfullscreen></iframe>
+    </div>
+
+    <!-- Information List -->
+    <div id="infoList">
+        <ul>
+            <li>Information about selected movies will appear here.</li>
+        </ul>
+    </div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const showOptionsBtn = document.getElementById('showOptionsBtn');
-            const movieSelect = document.getElementById('movieSelect');
-            const movieFrame = document.getElementById('movieFrame');
-            const fullscreenBtn = document.getElementById('fullscreenBtn');
-            const passcodeModal = document.getElementById('passcodeModal');
-            const passcodeInput = document.getElementById('passcodeInput');
-            const passcodeSubmitBtn = document.getElementById('passcodeSubmitBtn');
-            const gameBtn = document.getElementById('gameBtn');
-            const gameSection = document.getElementById('gameSection');
-            const backBtn = document.getElementById('backBtn');
-            const infoBtn = document.getElementById('infoBtn');
-            const infoList = document.getElementById('infoList');
+        const movieSelect = document.getElementById('movieSelect');
+        const movieFrame = document.getElementById('movieFrame');
+        const showOptionsBtn = document.getElementById('showOptionsBtn');
+        const passcodeModal = document.getElementById('passcodeModal');
+        const passcodeInput = document.getElementById('passcodeInput');
+        const passcodeSubmitBtn = document.getElementById('passcodeSubmitBtn');
+        const gameSection = document.getElementById('gameSection');
+        const gameBtn = document.getElementById('gameBtn');
+        const backBtn = document.getElementById('backBtn');
+        const infoList = document.getElementById('infoList');
+        const infoBtn = document.getElementById('infoBtn');
 
-            // Show modal on button click
-            showOptionsBtn.addEventListener('click', () => {
-                passcodeModal.style.display = 'flex';
-                passcodeInput.focus();
-            });
-
-            // Handle passcode submission
-            passcodeSubmitBtn.addEventListener('click', () => {
-                const passcode = passcodeInput.value;
-                if (passcode === "movie_lol") {
-                    passcodeModal.style.display = 'none';
-                    movieSelect.classList.add('show');
-                    showOptionsBtn.style.display = 'none';
-                    alert("Access Granted! Remember to keep the passcode safe.");
-                } else {
-                    alert("Incorrect passcode. Please try again.");
-                }
-            });
-
-            // Handle movie selection
-            movieSelect.addEventListener('change', (event) => {
-                const selectedID = event.target.value;
-                if (selectedID) {
-                    const movieURL = `https://vidsrc.xyz/embed/movie/${selectedID}`;
-                    movieFrame.style.opacity = 0;
-                    setTimeout(() => {
-                        movieFrame.src = movieURL;
-                        movieFrame.style.opacity = 1;
-                    }, 300);
-                    movieSelect.classList.remove('show');
-                    showOptionsBtn.style.display = 'block';
-                }
-            });
-
-            // Show game section
-            gameBtn.addEventListener('click', () => {
-                gameSection.style.display = 'flex';
-                movieSelect.classList.remove('show');
-                movieFrame.src = ''; // Clear iframe content
-            });
-
-            // Back button to go back to movie section
-            backBtn.addEventListener('click', () => {
-                gameSection.style.display = 'none';
-                showOptionsBtn.style.display = 'block';
-            });
-
-            // Show/hide information section
-            infoBtn.addEventListener('click', () => {
-                infoList.style.display = (infoList.style.display === 'block') ? 'none' : 'block';
-            });
-
-            // Close modal if clicking outside of it
-            window.addEventListener('click', (event) => {
-                if (event.target === passcodeModal) {
-                    passcodeModal.style.display = 'none';
-                }
-            });
-
-            // Show options again when pressing the Escape key
-            document.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape') {
-                    movieSelect.classList.remove('show');
-                    showOptionsBtn.style.display = 'block';
-                    movieFrame.src = ''; // Clear iframe content
-                }
-            });
-
-            // Toggle fullscreen mode
-            fullscreenBtn.addEventListener('click', () => {
-                if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen();
-                } else if (document.documentElement.mozRequestFullScreen) { // Firefox
-                    document.documentElement.mozRequestFullScreen();
-                } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                    document.documentElement.webkitRequestFullscreen();
-                } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
-                    document.documentElement.msRequestFullscreen();
-                }
-            });
+        // Show the movie select options
+        showOptionsBtn.addEventListener('click', () => {
+            movieSelect.classList.toggle('show');
         });
+
+        // Movie selection event
+        movieSelect.addEventListener('change', (event) => {
+            const selectedValue = event.target.value;
+            if (selectedValue) {
+                movieFrame.src = `https://www.2embed.ru/embed/${selectedValue}`;
+                toggleFullscreen();
+            }
+        });
+
+        // Passcode submission event
+        passcodeSubmitBtn.addEventListener('click', () => {
+            const enteredPasscode = passcodeInput.value;
+            if (enteredPasscode === 'yourPasscode') {
+                passcodeModal.style.display = 'none';
+                movieSelect.classList.remove('show');
+            } else {
+                alert('Incorrect passcode!');
+            }
+        });
+
+        // Show game section
+        gameBtn.addEventListener('click', () => {
+            gameSection.style.display = 'flex';
+            movieFrame.style.display = 'none';
+            toggleFullscreen();
+        });
+
+        // Back to movies from game section
+        backBtn.addEventListener('click', () => {
+            gameSection.style.display = 'none';
+            movieFrame.style.display = 'block';
+            toggleFullscreen();
+        });
+
+        // Show information
+        infoBtn.addEventListener('click', () => {
+            infoList.style.display = infoList.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Toggle fullscreen
+        function toggleFullscreen() {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                document.documentElement.requestFullscreen().then(() => {
+                    adjustIframeSize();
+                });
+            }
+        }
+
+        // Adjust iframe size when entering or exiting fullscreen
+        function adjustIframeSize() {
+            const iframe = document.getElementById('movieFrame');
+            if (document.fullscreenElement) {
+                iframe.style.width = "100vw";
+                iframe.style.height = "100vh";
+            } else {
+                iframe.style.width = "100%";
+                iframe.style.height = "100%";
+            }
+        }
+
+        // Event listeners for adjusting iframe size
+        document.addEventListener('fullscreenchange', adjustIframeSize);
     </script>
 </body>
 </html>
